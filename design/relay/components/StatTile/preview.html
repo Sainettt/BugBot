@@ -1,0 +1,48 @@
+<!-- @dsCard group="Данные" height=260 subtitle="Показатели за сутки и расход токенов" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 840px; }
+  .meter-wrap { max-width: 840px; margin-top: 16px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="row">
+    <div class="rl-stat">
+      <div class="rl-stat__label">Репортов за 24 ч</div>
+      <div class="rl-stat__value">18</div>
+      <div class="rl-stat__note">Вчера — 11</div>
+    </div>
+    <div class="rl-stat rl-stat--accent">
+      <div class="rl-stat__label">Разобрано ИИ</div>
+      <div class="rl-stat__value">16</div>
+      <div class="rl-stat__note">89% автоматически</div>
+    </div>
+    <div class="rl-stat rl-stat--danger">
+      <div class="rl-stat__label">Сбоев анализа</div>
+      <div class="rl-stat__value">2</div>
+      <div class="rl-stat__note">Оба — rate_limit</div>
+    </div>
+    <div class="rl-stat">
+      <div class="rl-stat__label">Токенов</div>
+      <div class="rl-stat__value">412k</div>
+      <div class="rl-stat__note">≈ 23k на репорт</div>
+    </div>
+  </div>
+
+  <div class="meter-wrap">
+    <div class="rl-stat">
+      <div class="rl-spread" style="margin-bottom:10px">
+        <span class="rl-stat__label">Месячный лимит токенов</span>
+        <span class="rl-mono" style="font-size:12px;color:var(--ink-200)">412 000 / 600 000</span>
+      </div>
+      <div class="rl-meter rl-meter--warn"><i style="width:69%"></i></div>
+      <div class="rl-stat__note">При текущем темпе лимит закончится 14 октября.</div>
+    </div>
+  </div>
+</body>
+</html>

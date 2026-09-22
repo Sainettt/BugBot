@@ -1,0 +1,38 @@
+<!-- @dsCard group="Основа" height=170 subtitle="Четыре вида, три размера" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .row:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="row">
+    <button class="rl-btn rl-btn--primary">Отправить отчёт</button>
+    <button class="rl-btn">Сохранить</button>
+    <button class="rl-btn rl-btn--ghost">Отмена</button>
+    <button class="rl-btn rl-btn--quiet">Пропустить</button>
+    <button class="rl-btn rl-btn--danger">Удалить проект</button>
+  </div>
+  <div class="row">
+    <button class="rl-btn rl-btn--sm">sm · 28px</button>
+    <button class="rl-btn">md · 36px</button>
+    <button class="rl-btn rl-btn--lg rl-btn--primary">lg · 44px</button>
+    <button class="rl-btn" disabled>Отключена</button>
+  </div>
+  <div class="row">
+    <button class="rl-btn rl-btn--primary">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h9M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+      С иконкой
+    </button>
+    <button class="rl-btn rl-btn--sm rl-btn--ghost">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+      Добавить проект
+    </button>
+  </div>
+</body>
+</html>

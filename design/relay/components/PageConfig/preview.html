@@ -1,0 +1,300 @@
+<!-- @dsCard group="Страницы" height=1200 width=1240 page subtitle="Админ: проекты, модели, правила анализа" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .frame { height: 1200px; }
+  .who { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+  .who i { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-100);
+           display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; }
+  .cols { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+  .plist { display: flex; flex-direction: column; }
+  .pitem {
+    display: block; text-align: left; width: 100%; cursor: pointer;
+    background: transparent; border: 0; border-bottom: 1px solid var(--line-soft);
+    padding: 14px 16px; color: var(--ink-100); font-family: inherit;
+  }
+  .pitem:hover { background: var(--surface-400); }
+  .pitem[aria-current="true"] { background: var(--surface-400); box-shadow: inset 2px 0 0 var(--accent-100); }
+  .pitem .nm { font-size: 14px; font-weight: 600; }
+  .pitem .mt { font-size: 11px; font-family: var(--font-mono); color: var(--ink-300); margin-top: 4px; display: flex; gap: 8px; }
+  .right { display: flex; flex-direction: column; gap: 24px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .models { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .mcard {
+    text-align: left; cursor: pointer; font-family: inherit;
+    background: var(--surface-300); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md); padding: 14px;
+  }
+  .mcard[aria-pressed="true"] { border-color: var(--accent-100); background: var(--accent-soft); }
+  .mcard .mn { font-size: 13px; font-weight: 600; color: var(--ink-100); }
+  .mcard .mp { font-size: 11px; color: var(--ink-300); margin-top: 2px; }
+  .mcard dl { display: grid; grid-template-columns: auto auto; gap: 2px 10px; margin: 12px 0 0; font-size: 11px; font-family: var(--font-mono); }
+  .mcard dt { color: var(--ink-300); }
+  .mcard dd { margin: 0; color: var(--ink-200); text-align: right; }
+  .line { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 14px 0; border-top: 1px solid var(--line-soft); }
+  .line:first-child { border-top: 0; padding-top: 0; }
+  .line .t { font-size: 13px; font-weight: 600; }
+  .line .d { font-size: 12px; line-height: 16px; color: var(--ink-300); margin-top: 2px; max-width: 460px; }
+</style>
+</head>
+<body class="rl-root">
+<div class="rl-shell frame">
+
+  <aside class="rl-side">
+    <span class="rl-mark">
+      <svg width="24" height="20" viewBox="0 0 26 20" fill="none" aria-hidden="true">
+        <path d="M2 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        <path d="M10 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".45"/>
+        <circle cx="22.5" cy="10" r="2" fill="currentColor"/>
+      </svg>
+      <b>Relay</b>
+    </span>
+    <nav class="rl-nav">
+      <div class="rl-nav__group">Поток</div>
+      <a href="#">Репорты <span class="rl-nav__count">18</span></a>
+      <a href="#">Предложения <span class="rl-nav__count">6</span></a>
+      <div class="rl-nav__group">Система</div>
+      <a href="#" aria-current="page">Конфигурация</a>
+      <a href="#">Журнал анализа</a>
+    </nav>
+    <div class="who">
+      <i>ДФ</i>
+      <div>
+        <div style="font-size:13px;font-weight:600">Данило Ф.</div>
+        <div style="font-size:11px;color:var(--ink-300)">Администратор</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="rl-main">
+    <header class="rl-topbar">
+      <h1 class="rl-h1">Конфигурация</h1>
+      <div class="rl-row">
+        <span class="rl-hint">Изменения сохраняются сразу</span>
+        <button class="rl-btn rl-btn--sm">Журнал изменений</button>
+      </div>
+    </header>
+
+    <div class="rl-content">
+      <div class="rl-tabs" role="tablist">
+        <button class="rl-tab" role="tab" aria-selected="true">Проекты</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Модели</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Уведомления</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Доступ</button>
+      </div>
+
+      <div class="cols">
+        <section class="rl-panel">
+          <header class="rl-panel__head">
+            <h3 class="rl-panel__title">Проекты</h3>
+            <button class="rl-btn rl-btn--sm rl-btn--ghost">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+              Добавить
+            </button>
+          </header>
+          <div class="rl-panel__body rl-panel__body--flush">
+            <div class="plist">
+              <button class="pitem" aria-current="true">
+                <div class="nm">MAGGuarantee · web</div>
+                <div class="mt"><span>12 репортов</span><span>opus</span></div>
+              </button>
+              <button class="pitem">
+                <div class="nm">MAGGuarantee · API</div>
+                <div class="mt"><span>4 репорта</span><span>sonnet</span></div>
+              </button>
+              <button class="pitem">
+                <div class="nm">Внутренний портал</div>
+                <div class="mt"><span>2 репорта</span><span>sonnet</span></div>
+              </button>
+              <button class="pitem">
+                <div class="nm">Склад · терминал</div>
+                <div class="mt"><span>выключен</span></div>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="right">
+
+          <section class="rl-panel">
+            <header class="rl-panel__head">
+              <h3 class="rl-panel__title">MAGGuarantee · web</h3>
+              <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0" aria-label="Проект активен"><span class="rl-switch__track"></span></span>
+            </header>
+            <div class="rl-panel__body">
+              <div class="grid2">
+                <div class="rl-field">
+                  <label class="rl-label" for="c-name">Название</label>
+                  <input class="rl-input" id="c-name" value="MAGGuarantee · web">
+                </div>
+                <div class="rl-field">
+                  <label class="rl-label" for="c-key">Ingest-ключ</label>
+                  <div class="rl-row">
+                    <input class="rl-input rl-input--mono" id="c-key" value="rly_live_8f42c1a9d0e7" readonly>
+                    <button class="rl-btn rl-btn--ghost">Перевыпустить</button>
+                  </div>
+                </div>
+                <div class="rl-field">
+                  <label class="rl-label" for="c-dom">Разрешённые домены</label>
+                  <input class="rl-input rl-input--mono" id="c-dom" value="app.magtrans.pl, localhost:5173">
+                  <div class="rl-hint">Откуда принимаются отчёты. Остальные получают 403.</div>
+                </div>
+                <div class="rl-field">
+                  <label class="rl-label" for="c-own">Ответственный</label>
+                  <select class="rl-select" id="c-own">
+                    <option>Данило Ф. · разработка</option>
+                    <option>Володимир Б. · поддержка</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <footer class="rl-panel__foot">
+              <span class="rl-hint">Ссылка на форму: <span class="rl-mono">relay.magtrans.pl/r/magguarantee-web</span></span>
+              <button class="rl-btn rl-btn--sm rl-btn--danger">Удалить проект</button>
+            </footer>
+          </section>
+
+          <section class="rl-panel">
+            <header class="rl-panel__head">
+              <h3 class="rl-panel__title">Модель анализа</h3>
+              <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Переопределено для проекта</span>
+            </header>
+            <div class="rl-panel__body">
+              <div class="models">
+                <button class="mcard" aria-pressed="true">
+                  <div class="mn">claude-opus-5</div>
+                  <div class="mp">Anthropic · основная</div>
+                  <dl>
+                    <dt>контекст</dt><dd>200k</dd>
+                    <dt>ср. разбор</dt><dd>6,4 с</dd>
+                    <dt>точность</dt><dd>0,86</dd>
+                  </dl>
+                </button>
+                <button class="mcard" aria-pressed="false">
+                  <div class="mn">claude-sonnet</div>
+                  <div class="mp">Anthropic · дешевле</div>
+                  <dl>
+                    <dt>контекст</dt><dd>200k</dd>
+                    <dt>ср. разбор</dt><dd>2,1 с</dd>
+                    <dt>точность</dt><dd>0,79</dd>
+                  </dl>
+                </button>
+                <button class="mcard" aria-pressed="false">
+                  <div class="mn">local · qwen-coder</div>
+                  <div class="mp">Свой сервер</div>
+                  <dl>
+                    <dt>контекст</dt><dd>32k</dd>
+                    <dt>ср. разбор</dt><dd>11 с</dd>
+                    <dt>точность</dt><dd>0,61</dd>
+                  </dl>
+                </button>
+              </div>
+
+              <div class="grid2" style="margin-top:20px">
+                <div class="rl-field">
+                  <label class="rl-label" for="c-lim">Лимит токенов на репорт</label>
+                  <input class="rl-input rl-input--mono" id="c-lim" value="25000">
+                  <div class="rl-hint">Превышение — статус «Нужен человек», письмо всё равно уйдёт.</div>
+                </div>
+                <div class="rl-field">
+                  <label class="rl-label" for="c-fb">Запасная модель</label>
+                  <select class="rl-select" id="c-fb">
+                    <option>claude-sonnet</option>
+                    <option>Без запасной</option>
+                  </select>
+                  <div class="rl-hint">Используется при 429 и таймауте основной.</div>
+                </div>
+              </div>
+
+              <div class="rl-field" style="margin-top:16px">
+                <label class="rl-label" for="c-pr">Инструкция для разбора</label>
+                <textarea class="rl-textarea rl-textarea--mono" id="c-pr" rows="5">Ты разбираешь баг-репорты внутреннего B2B-приложения.
+Верни JSON по схеме report_analysis_v2 и краткую сводку на русском (3–4 предложения),
+понятную человеку без доступа к коду. Severity: critical | high | medium | low.
+Если данных не хватает — severity: null и needs_human: true.</textarea>
+                <div class="rl-hint">Схема ответа зафиксирована — меняется только текст инструкции.</div>
+              </div>
+
+              <hr class="rl-sep" style="margin:20px 0 4px">
+
+              <div class="line">
+                <div>
+                  <div class="t">Автоматический анализ</div>
+                  <div class="d">Новый репорт уходит в модель сразу после отправки.</div>
+                </div>
+                <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0"><span class="rl-switch__track"></span></span>
+              </div>
+              <div class="line">
+                <div>
+                  <div class="t">Повтор при сбое</div>
+                  <div class="d">Одна повторная попытка через 60 секунд, затем запасная модель.</div>
+                </div>
+                <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0"><span class="rl-switch__track"></span></span>
+              </div>
+              <div class="line">
+                <div>
+                  <div class="t">Искать дубликаты</div>
+                  <div class="d">Сравнение с разобранными репортами проекта за 90 дней.</div>
+                </div>
+                <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0"><span class="rl-switch__track"></span></span>
+              </div>
+              <div class="line">
+                <div>
+                  <div class="t">Скрывать контакты автора от модели</div>
+                  <div class="d">Из контекста вырезаются e-mail и телефон, в карточке они остаются.</div>
+                </div>
+                <span class="rl-switch" data-state="off" role="switch" aria-checked="false" tabindex="0"><span class="rl-switch__track"></span></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="rl-panel">
+            <header class="rl-panel__head">
+              <h3 class="rl-panel__title">Куда уходит разбор</h3>
+              <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Письма включены</span>
+            </header>
+            <div class="rl-panel__body">
+              <div class="grid2">
+                <div class="rl-field">
+                  <label class="rl-label" for="c-mail">Почта администратора</label>
+                  <input class="rl-input rl-input--mono" id="c-mail" value="admin@magtrans.pl">
+                </div>
+                <div class="rl-field">
+                  <label class="rl-label" for="c-thr">Писать начиная с severity</label>
+                  <select class="rl-select" id="c-thr">
+                    <option>medium и выше</option>
+                    <option>high и выше</option>
+                    <option>только critical</option>
+                    <option>все репорты</option>
+                  </select>
+                </div>
+                <div class="rl-field" style="grid-column:1 / -1">
+                  <label class="rl-label" for="c-subj">Тема письма</label>
+                  <input class="rl-input rl-input--mono" id="c-subj" value="[Relay] {severity} · {project} · {report_id}">
+                  <div class="rl-hint">Доступны: {severity}, {project}, {report_id}, {component}, {author}.</div>
+                </div>
+              </div>
+              <div class="rl-callout" style="margin-top:16px">
+                <svg class="rl-callout__icon" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M9 8v5M9 5.5v.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <div>К письму прикладывается <span class="rl-mono">context.json</span> и ссылка на карточку в Relay.
+                  Репорты ниже порога в письмо не попадают, но в списке видны все.</div>
+              </div>
+            </div>
+            <footer class="rl-panel__foot">
+              <span class="rl-hint">Последнее письмо — 12 минут назад</span>
+              <button class="rl-btn rl-btn--sm">Отправить тестовое</button>
+            </footer>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

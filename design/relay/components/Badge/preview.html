@@ -1,0 +1,48 @@
+<!-- @dsCard group="Статусы" height=250 subtitle="Статус репорта, severity, чип контекста" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .grp { margin-bottom: 20px; }
+  .grp:last-child { margin-bottom: 0; }
+  .lbl { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-300); margin-bottom: 10px; }
+  .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="grp">
+    <div class="lbl">Статус репорта</div>
+    <div class="row">
+      <span class="rl-badge"><i class="rl-badge__dot"></i>Принят</span>
+      <span class="rl-badge rl-badge--info"><i class="rl-badge__dot"></i>В очереди</span>
+      <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Анализируется</span>
+      <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span>
+      <span class="rl-badge rl-badge--warn"><i class="rl-badge__dot"></i>Нужен человек</span>
+      <span class="rl-badge rl-badge--danger"><i class="rl-badge__dot"></i>Сбой анализа</span>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">Severity от ИИ</div>
+    <div class="row">
+      <span class="rl-sev rl-sev--crit">critical</span>
+      <span class="rl-sev rl-sev--high">high</span>
+      <span class="rl-sev rl-sev--med">medium</span>
+      <span class="rl-sev rl-sev--low">low</span>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">Контекст источника</div>
+    <div class="row">
+      <span class="rl-chip">приложение <b>MAGGuarantee</b></span>
+      <span class="rl-chip">версия <b>2.14.3</b></span>
+      <span class="rl-chip">экран <b>/orders/4821</b></span>
+      <span class="rl-chip">браузер <b>Chrome 141</b></span>
+    </div>
+  </div>
+</body>
+</html>

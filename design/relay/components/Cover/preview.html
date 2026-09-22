@@ -1,0 +1,64 @@
+<!-- @dsCard height=288 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .cover { width: 960px; height: 288px; position: relative; }
+  svg { display: block; }
+  .tint { fill: var(--accent-soft); }
+  .slab { fill: var(--accent-100); }
+  .ink  { fill: var(--ink-200); }
+  .dot-a { fill: var(--accent-200); }
+  .dot-b { fill: var(--surface-100); }
+  .sig-1 { fill: var(--danger-100); rx: var(--radius-sm); }
+  .sig-2 { fill: var(--warn-100); rx: var(--radius-sm); }
+  .sig-3 { fill: var(--success-100); rx: var(--radius-sm); }
+  .name {
+    fill: var(--ink-100);
+    font-family: var(--font-display);
+    font-size: 120px; font-weight: 600; letter-spacing: -0.03em;
+  }
+  .tag { fill: var(--ink-300); font-family: var(--font-sans); font-size: 14px; font-weight: 400; }
+</style>
+</head>
+<body class="rl-root">
+<div class="cover">
+<!-- Блоки: accent-100 192×288 (6 × space-6), ink-200 128×288 (4 × space-6), поле accent-soft 480×288; сигнальные квадраты 16×16, radius-sm.
+     Композиция: полосы неравной ширины от x=480 до правого края, все в обрез сверху и снизу; имя слева на грунте, ничего правее x=480 его не пересекает.
+     Паттерн: точечная сетка — ряд «точный, технический, моноширинный»: Relay показывает машинный разбор, и сетка повторяет ритм таблицы и JSON-панели.
+     Шаг сетки 48px (space-7), радиус точек 3px, радиусы квадратов radius-sm, ширины кратны space-6 (32px). -->
+<svg width="960" height="288" viewBox="0 0 960 288" role="img" aria-label="Relay — обложка системы">
+  <rect class="tint" x="480" y="0" width="480" height="288"/>
+  <rect class="slab" x="592" y="0" width="192" height="288"/>
+  <rect class="ink"  x="832" y="0" width="128" height="288"/>
+
+  <g class="dot-a">
+    <circle cx="504" cy="24" r="3"/><circle cx="552" cy="24" r="3"/>
+    <circle cx="504" cy="72" r="3"/><circle cx="552" cy="72" r="3"/>
+    <circle cx="504" cy="120" r="3"/><circle cx="552" cy="120" r="3"/>
+    <circle cx="504" cy="168" r="3"/><circle cx="552" cy="168" r="3"/>
+    <circle cx="504" cy="216" r="3"/><circle cx="552" cy="216" r="3"/>
+    <circle cx="504" cy="264" r="3"/><circle cx="552" cy="264" r="3"/>
+  </g>
+  <g class="dot-b">
+    <circle cx="864" cy="24" r="3"/><circle cx="912" cy="24" r="3"/>
+    <circle cx="864" cy="72" r="3"/><circle cx="912" cy="72" r="3"/>
+    <circle cx="864" cy="120" r="3"/><circle cx="912" cy="120" r="3"/>
+    <circle cx="864" cy="168" r="3"/><circle cx="912" cy="168" r="3"/>
+    <circle cx="864" cy="216" r="3"/><circle cx="912" cy="216" r="3"/>
+    <circle cx="864" cy="264" r="3"/><circle cx="912" cy="264" r="3"/>
+  </g>
+
+  <rect class="sig-1" x="800" y="96" width="16" height="16" rx="4"/>
+  <rect class="sig-2" x="800" y="128" width="16" height="16" rx="4"/>
+  <rect class="sig-3" x="800" y="160" width="16" height="16" rx="4"/>
+
+  <text class="name" x="48" y="214">Relay</text>
+  <text class="tag" x="52" y="248">Отчёты об ошибках, которые разбирает ИИ</text>
+</svg>
+</div>
+</body>
+</html>

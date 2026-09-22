@@ -14,7 +14,7 @@ The repository is still called `MAGGuaranteeBugBot`; renaming to `BugBot` is pen
 
 - Code, DB, identifiers, comments and `docs/`: **English** (decision 2026-09-22). `PLAN.md` (the product plan) is Russian. The user (Danyil, admin/informatyk) communicates in **Russian** — answer in Russian.
 - Vocabulary of the connected projects stays untranslated: przewoźnik, wniosek, stanowisko, MAGGuarantee role names (`przewoznik`, `opiekun`, `planista`…).
-- UI: a project's forms render in that project's language (MAGGuarantee: Polish by default, switchable); the owner cabinet language is not decided yet.
+- UI: a project's forms render in that project's language (`Project.formLocale`; MAGGuarantee: Polish by default, switchable). The owner cabinet is **English + Polish** (i18n dictionary as in MAGSpace: `en` + `pl`, compile-checked keys, never hard-coded copy; English default). The agent's report language is a per-project setting (`reportLocale`, default Russian).
 
 ## Stack & layout (decided 2026-09-22)
 
@@ -29,7 +29,9 @@ pnpm monorepo: `apps/api` (NestJS + Prisma + PostgreSQL — HTTP API and the que
 | Entities, statuses, ERD, Prisma conventions | [`docs/02-entities.md`](docs/02-entities.md) |
 | Flows: handoff sign-in, queue, agent run, notifications | `docs/03-flows.md` (planned) |
 | Decision log (append-only, dated) | [`docs/04-decisions.md`](docs/04-decisions.md) |
-| Contracts other repositories implement (handoff token, provider, auth adapter, result schema) | `docs/05-contracts.md` (planned) |
+| Design → UI mapping: tokens, `rl-*` components, screens, what differs from the mockups | [`docs/05-design-ui.md`](docs/05-design-ui.md) |
+| The Relay design system itself (tokens, component CSS, page mockups; verbatim copy, never edited by hand) | [`design/relay/`](design/relay/) |
+| Contracts other repositories implement (handoff token, provider, auth adapter, result schema) | `docs/06-contracts.md` (planned) |
 | Implementation plans, in execution order | `docs/plans/` |
 | Analysis presets (bug / idea) and prompt layers | `apps/agent-runner/presets/` (planned) |
 | Full doc index | [`docs/README.md`](docs/README.md) |
@@ -46,4 +48,5 @@ planner (feature / schema plans, opus) · researcher (how-does-X-work, sonnet) �
 - Every query on project-scoped data is filtered by the session's `projectId`. Every owner action writes a `HistoryEvent`.
 - Report text and attachments are untrusted input everywhere: in prompts (untrusted block only), in rendering (escape), in logs (no raw report text).
 - Secrets live in env; the DB stores env variable *names* only. Never paste secret values into prompts, docs or commits.
+- UI follows the Relay design system: colours only through the tokens (`design/relay/tokens.json` → `tokens.css`), components through the `rl-*` classes, one primary button and one accent spot per screen, no toasts / spinners / animations, machine values monospace. The mockups' Russian copy is reference only — cabinet strings live in the EN/PL dictionary.
 - Job / report / run state changes happen in one transaction with their side-effect record (notification row, history event), so a retry can never send the same e-mail twice.

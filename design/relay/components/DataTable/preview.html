@@ -1,0 +1,88 @@
+<!-- @dsCard group="Данные" height=380 subtitle="Список репортов: статус, severity, токены" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .ttl { font-size: 14px; }
+  .sub { font-size: 12px; color: var(--ink-300); margin-top: 2px; }
+</style>
+</head>
+<body class="rl-root">
+  <section class="rl-panel">
+    <div class="rl-panel__body rl-panel__body--flush">
+      <table class="rl-table">
+        <thead>
+          <tr>
+            <th>Репорт</th>
+            <th>Проект</th>
+            <th>Severity</th>
+            <th>Статус</th>
+            <th style="text-align:right">Токены</th>
+            <th style="text-align:right">Время</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr aria-selected="true">
+            <td>
+              <div class="ttl">Не сохраняется заявка на закупку</div>
+              <div class="sub"><span class="rl-id">RLY-2481</span> · Ирина К.</div>
+            </td>
+            <td class="rl-dim">MAGGuarantee · web</td>
+            <td><span class="rl-sev rl-sev--crit">critical</span></td>
+            <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+            <td class="rl-num">18 420</td>
+            <td class="rl-num">12 мин</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ttl">Отчёт по рейсам грузится 40 секунд</div>
+              <div class="sub"><span class="rl-id">RLY-2480</span> · Павел М.</div>
+            </td>
+            <td class="rl-dim">MAGGuarantee · API</td>
+            <td><span class="rl-sev rl-sev--high">high</span></td>
+            <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+            <td class="rl-num">9 110</td>
+            <td class="rl-num">34 мин</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ttl">Кнопка «Экспорт» не видна на ноутбуке</div>
+              <div class="sub"><span class="rl-id">RLY-2479</span> · Анна В.</div>
+            </td>
+            <td class="rl-dim">Внутренний портал</td>
+            <td><span class="rl-sev rl-sev--low">low</span></td>
+            <td><span class="rl-badge rl-badge--warn"><i class="rl-badge__dot"></i>Нужен человек</span></td>
+            <td class="rl-num">4 260</td>
+            <td class="rl-num">1 ч</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ttl">Письмо о статусе приходит дважды</div>
+              <div class="sub"><span class="rl-id">RLY-2478</span> · Сергей Д.</div>
+            </td>
+            <td class="rl-dim">MAGGuarantee · web</td>
+            <td><span class="rl-sev rl-sev--med">medium</span></td>
+            <td><span class="rl-badge rl-badge--danger"><i class="rl-badge__dot"></i>Сбой анализа</span></td>
+            <td class="rl-num">—</td>
+            <td class="rl-num">2 ч</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ttl">Не открывается вложение в заявке</div>
+              <div class="sub"><span class="rl-id">RLY-2477</span> · Ирина К.</div>
+            </td>
+            <td class="rl-dim">MAGGuarantee · web</td>
+            <td><span class="rl-sev rl-sev--med">medium</span></td>
+            <td><span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Анализируется</span></td>
+            <td class="rl-num">—</td>
+            <td class="rl-num">2 ч</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</body>
+</html>

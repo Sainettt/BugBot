@@ -1,0 +1,42 @@
+<!-- @dsCard group="Основа" height=190 subtitle="Включено, выключено, с описанием" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .max { max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
+  .line { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+  .t { font-size: 13px; font-weight: 600; }
+  .d { font-size: 12px; line-height: 16px; color: var(--ink-300); margin-top: 2px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="max">
+    <div class="line">
+      <div>
+        <div class="t">Автоматический анализ</div>
+        <div class="d">Новый репорт уходит в модель сразу после отправки.</div>
+      </div>
+      <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0"><span class="rl-switch__track"></span></span>
+    </div>
+    <hr class="rl-sep">
+    <div class="line">
+      <div>
+        <div class="t">Повтор при сбое</div>
+        <div class="d">Одна повторная попытка через 60 секунд.</div>
+      </div>
+      <span class="rl-switch" data-state="on" role="switch" aria-checked="true" tabindex="0"><span class="rl-switch__track"></span></span>
+    </div>
+    <hr class="rl-sep">
+    <div class="line">
+      <div>
+        <div class="t">Скрывать контакты автора от ИИ</div>
+        <div class="d">Из контекста вырезаются e-mail и телефон.</div>
+      </div>
+      <span class="rl-switch" data-state="off" role="switch" aria-checked="false" tabindex="0"><span class="rl-switch__track"></span></span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!-- @dsCard group="Страницы" height=1000 width=1440 page subtitle="Админ: список репортов и разбор ИИ" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .frame { height: 1000px; }
+  .who { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+  .who i { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-100);
+           display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .filters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .search { position: relative; flex: 1; min-width: 200px; }
+  .search input { padding-left: 34px; }
+  .search svg { position: absolute; left: 11px; top: 10px; color: var(--ink-300); }
+  .ttl { font-size: 14px; }
+  .sub { font-size: 12px; color: var(--ink-300); margin-top: 2px; }
+  .rl-drawer__body { overflow: auto; }
+  .close { background: none; border: 0; color: var(--ink-300); cursor: pointer; font-size: 16px; line-height: 1; padding: 4px; }
+  .sum { font-size: 14px; line-height: 21px; margin: 0; }
+</style>
+</head>
+<body class="rl-root">
+<div class="rl-shell frame">
+
+  <aside class="rl-side">
+    <span class="rl-mark">
+      <svg width="24" height="20" viewBox="0 0 26 20" fill="none" aria-hidden="true">
+        <path d="M2 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        <path d="M10 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".45"/>
+        <circle cx="22.5" cy="10" r="2" fill="currentColor"/>
+      </svg>
+      <b>Relay</b>
+    </span>
+    <nav class="rl-nav">
+      <div class="rl-nav__group">Поток</div>
+      <a href="#" aria-current="page">Репорты <span class="rl-nav__count">18</span></a>
+      <a href="#">Предложения <span class="rl-nav__count">6</span></a>
+      <div class="rl-nav__group">Система</div>
+      <a href="#">Конфигурация</a>
+      <a href="#">Журнал анализа</a>
+    </nav>
+    <div class="who">
+      <i>ДФ</i>
+      <div>
+        <div style="font-size:13px;font-weight:600">Данило Ф.</div>
+        <div style="font-size:11px;color:var(--ink-300)">Администратор</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="rl-main">
+    <header class="rl-topbar">
+      <h1 class="rl-h1">Репорты</h1>
+      <div class="rl-row">
+        <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Анализ включён</span>
+        <button class="rl-btn rl-btn--sm">Экспорт CSV</button>
+      </div>
+    </header>
+
+    <div class="rl-content">
+      <div class="stats">
+        <div class="rl-stat">
+          <div class="rl-stat__label">Репортов за 24 ч</div>
+          <div class="rl-stat__value">18</div>
+          <div class="rl-stat__note">Вчера — 11</div>
+        </div>
+        <div class="rl-stat rl-stat--accent">
+          <div class="rl-stat__label">Разобрано ИИ</div>
+          <div class="rl-stat__value">16</div>
+          <div class="rl-stat__note">89% без человека</div>
+        </div>
+        <div class="rl-stat rl-stat--danger">
+          <div class="rl-stat__label">Сбоев анализа</div>
+          <div class="rl-stat__value">2</div>
+          <div class="rl-stat__note">Оба — rate_limit</div>
+        </div>
+        <div class="rl-stat">
+          <div class="rl-stat__label">Токенов за сутки</div>
+          <div class="rl-stat__value">412k</div>
+          <div class="rl-stat__note">≈ 23k на репорт</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="search">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="m10.5 10.5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+          <input class="rl-input" placeholder="Поиск по тексту, id, компоненту">
+        </div>
+        <select class="rl-select" style="width:auto"><option>Все проекты</option><option>MAGGuarantee · web</option><option>MAGGuarantee · API</option></select>
+        <select class="rl-select" style="width:auto"><option>Все статусы</option><option>Разобран</option><option>Нужен человек</option><option>Сбой анализа</option></select>
+        <div class="rl-seg" role="group" aria-label="Период">
+          <button aria-pressed="true">24 ч</button>
+          <button aria-pressed="false">7 дней</button>
+          <button aria-pressed="false">Всё</button>
+        </div>
+        <button class="rl-btn rl-btn--sm rl-btn--quiet">Сбросить</button>
+      </div>
+
+      <section class="rl-panel">
+        <div class="rl-panel__body rl-panel__body--flush">
+          <table class="rl-table">
+            <thead>
+              <tr>
+                <th>Репорт</th>
+                <th>Severity</th>
+                <th>Статус</th>
+                <th style="text-align:right">Токены</th>
+                <th style="text-align:right">Время</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr aria-selected="true">
+                <td>
+                  <div class="ttl">Не сохраняется заявка на закупку</div>
+                  <div class="sub"><span class="rl-id">RLY-2481</span> · MAGGuarantee · web · Ирина К.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--crit">critical</span></td>
+                <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+                <td class="rl-num">18 420</td>
+                <td class="rl-num">12 мин</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">Отчёт по рейсам грузится 40 секунд</div>
+                  <div class="sub"><span class="rl-id">RLY-2480</span> · MAGGuarantee · API · Павел М.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--high">high</span></td>
+                <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+                <td class="rl-num">9 110</td>
+                <td class="rl-num">34 мин</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">Кнопка «Экспорт» не видна на ноутбуке</div>
+                  <div class="sub"><span class="rl-id">RLY-2479</span> · Внутренний портал · Анна В.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--low">low</span></td>
+                <td><span class="rl-badge rl-badge--warn"><i class="rl-badge__dot"></i>Нужен человек</span></td>
+                <td class="rl-num">4 260</td>
+                <td class="rl-num">1 ч</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">Письмо о статусе приходит дважды</div>
+                  <div class="sub"><span class="rl-id">RLY-2478</span> · MAGGuarantee · web · Сергей Д.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--med">medium</span></td>
+                <td><span class="rl-badge rl-badge--danger"><i class="rl-badge__dot"></i>Сбой анализа</span></td>
+                <td class="rl-num">—</td>
+                <td class="rl-num">2 ч</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">Не открывается вложение в заявке</div>
+                  <div class="sub"><span class="rl-id">RLY-2477</span> · MAGGuarantee · web · Ирина К.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--med">medium</span></td>
+                <td><span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Анализируется</span></td>
+                <td class="rl-num">—</td>
+                <td class="rl-num">2 ч</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">В списке рейсов пропадает фильтр по дате</div>
+                  <div class="sub"><span class="rl-id">RLY-2476</span> · MAGGuarantee · web · Павел М.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--high">high</span></td>
+                <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+                <td class="rl-num">12 940</td>
+                <td class="rl-num">3 ч</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">Печать путевого листа съезжает на вторую страницу</div>
+                  <div class="sub"><span class="rl-id">RLY-2475</span> · Внутренний портал · Анна В.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--low">low</span></td>
+                <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+                <td class="rl-num">6 780</td>
+                <td class="rl-num">5 ч</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="ttl">TimoCOM перестал подтягивать заявки</div>
+                  <div class="sub"><span class="rl-id">RLY-2474</span> · MAGGuarantee · API · Сергей Д.</div>
+                </td>
+                <td><span class="rl-sev rl-sev--crit">critical</span></td>
+                <td><span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span></td>
+                <td class="rl-num">21 030</td>
+                <td class="rl-num">7 ч</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <footer class="rl-panel__foot">
+          <span class="rl-hint">Показано 8 из 18</span>
+          <div class="rl-row">
+            <button class="rl-btn rl-btn--sm rl-btn--ghost">Назад</button>
+            <button class="rl-btn rl-btn--sm rl-btn--ghost">Дальше</button>
+          </div>
+        </footer>
+      </section>
+    </div>
+  </main>
+
+  <aside class="rl-drawer">
+    <header class="rl-drawer__head">
+      <div class="rl-spread" style="margin-bottom:10px">
+        <div class="rl-row">
+          <span class="rl-id rl-mono">RLY-2481</span>
+          <span class="rl-sev rl-sev--crit">critical</span>
+          <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Разобран</span>
+        </div>
+        <button class="close" aria-label="Закрыть разбор">✕</button>
+      </div>
+      <div style="font-size:20px;line-height:26px;font-weight:600">Не сохраняется заявка на закупку</div>
+      <div style="font-size:12px;color:var(--ink-300);margin-top:6px">
+        MAGGuarantee · web 2.14.3 · Ирина К. · 12 минут назад
+      </div>
+    </header>
+
+    <div class="rl-drawer__body">
+      <div class="rl-tabs" role="tablist">
+        <button class="rl-tab" role="tab" aria-selected="true">Сводка</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Контекст JSON</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Письмо</button>
+        <button class="rl-tab" role="tab" aria-selected="false">Исходный текст</button>
+      </div>
+
+      <p class="sum">
+        Сохранение заявки падает на валидации сервера: поле <span class="rl-mono">supplier_id</span>
+        уходит строкой, а API ждёт число. Клиент молча откатывает форму, поэтому человеку кажется,
+        что данные исчезли. Воспроизводится на всех заявках, созданных из шаблона.
+      </p>
+
+      <dl class="rl-kv">
+        <dt>Компонент</dt><dd class="rl-mono">orders/save-draft</dd>
+        <dt>Причина</dt><dd>Несовпадение типа поля</dd>
+        <dt>Похожие</dt><dd><span class="rl-id rl-mono">RLY-2402</span>, <span class="rl-id rl-mono">RLY-2310</span></dd>
+        <dt>Что делать</dt><dd>Привести тип <span class="rl-mono">supplier_id</span> на клиенте и показывать ошибку валидации вместо отката.</dd>
+        <dt>Уверенность</dt><dd>0,82</dd>
+      </dl>
+
+      <div>
+        <div class="rl-spread" style="margin-bottom:10px">
+          <span class="rl-eyebrow" style="font-size:11px;font-weight:600;letter-spacing:.12em">context.json</span>
+          <span class="rl-row">
+            <span class="rl-mono" style="font-size:11px;color:var(--ink-300)">18 420 токенов · 6,4 с · opus</span>
+            <button class="rl-btn rl-btn--sm rl-btn--ghost">Скачать</button>
+          </span>
+        </div>
+<pre class="rl-code"><span class="p">{</span>
+  <span class="k">"report_id"</span><span class="p">:</span> <span class="s">"RLY-2481"</span><span class="p">,</span>
+  <span class="k">"severity"</span><span class="p">:</span> <span class="s">"critical"</span><span class="p">,</span>
+  <span class="k">"confidence"</span><span class="p">:</span> <span class="n">0.82</span><span class="p">,</span>
+  <span class="k">"component"</span><span class="p">:</span> <span class="s">"orders/save-draft"</span><span class="p">,</span>
+  <span class="k">"reproducible"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span>
+  <span class="k">"root_cause"</span><span class="p">:</span> <span class="s">"type_mismatch: supplier_id"</span><span class="p">,</span>
+  <span class="k">"duplicates"</span><span class="p">:</span> <span class="p">[</span><span class="s">"RLY-2402"</span><span class="p">,</span> <span class="s">"RLY-2310"</span><span class="p">],</span>
+  <span class="k">"usage"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"tokens"</span><span class="p">:</span> <span class="n">18420</span><span class="p">,</span> <span class="k">"ms"</span><span class="p">:</span> <span class="n">6412</span> <span class="p">}</span>
+<span class="p">}</span></pre>
+      </div>
+
+      <div class="rl-callout rl-callout--ok">
+        <svg class="rl-callout__icon" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="m5.8 9.2 2.2 2.2 4.2-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><b>Письмо отправлено</b>admin@magtrans.pl · 12 минут назад · вложен context.json</div>
+      </div>
+
+      <div class="rl-row" style="gap:8px">
+        <button class="rl-btn rl-btn--primary">В работу</button>
+        <button class="rl-btn">Переслать</button>
+        <button class="rl-btn rl-btn--quiet">Дубликат</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

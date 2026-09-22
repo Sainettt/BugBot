@@ -113,7 +113,7 @@ One wide row: typed columns for everything the worker, runner and guards query; 
 |---|---|---|---|
 | identity | `slug` | String, unique | `magguarantee`; part of every URL. |
 | | `name` | String | |
-| | `codePrefix` | String, unique | `MAGG` → reports shown as `MAGG-42`, e-mail subject `[MAGG][bug] #42`. |
+| | `codePrefix` | String, unique | Derived from the project name at creation (first four letters, upper-case: MAGGuarantee → `MAGG`, MAGSpace → `MAGS`), editable before the first report. Reports shown as `MAGG-42`; bugs and ideas share one sequence per project. E-mail subject `[MAGG][bug] MAGG-42: …`. |
 | | `status` | `ProjectStatus` | |
 | | `timezone` | String = `Europe/Warsaw` | For "per day" limits and e-mail date formatting. |
 | | `formLocale` | String = `pl` | Default UI language of the project's forms. |
@@ -137,7 +137,7 @@ One wide row: typed columns for everything the worker, runner and guards query; 
 | | `authConfig` | Json | Per adapter. For `handoff-jwt`: `issuer`, `publicKeys: [{kid, pem, notBefore?}]` (list → key rotation without downtime), `reporterRoles[]` (`*` = any), `adminRoles[]`, `adminSubs[]`, `adminEmails[]`, `sessionTtlMin`. |
 | forms | `formConfig` | Json | `{ bug: { fields: FieldDef[] }, idea: { fields: FieldDef[] }, dictionaries: {...} }`. `FieldDef = { key, type, required, labels: {pl, en, ru}, options?, dictionary? }`. `title` and `description` are implicit and always present. |
 | mail | `notificationConfig` | Json | `{ bug: { to: [] }, idea: { to: [] }, failed: { to: [] }, subjectPrefix? }`. |
-| limits | `limits` | Json | `{ reportsPerUserPerDay, maxAttachments, maxAttachmentBytes, allowedMimeTypes[] }`. |
+| limits | `limits` | Json | `{ reportsPerUserPerDay, maxAttachments, maxAttachmentBytes, allowedMimeTypes[] }`. Defaults for a new project (decision 2026-09-22): 5 reports per user per day, 5 attachments, 10 MB each, `image/png`, `image/jpeg`, `image/webp`, `application/pdf`. |
 | counters | `reportCounter` | Int = 0 | Per-project report number sequence (see 4.1). |
 | | `createdAt`, `updatedAt` | | |
 
@@ -771,10 +771,11 @@ model HistoryEvent {
 | Global identity across projects for the same e-mail | Privacy and role semantics differ per project; the owner can still search by e-mail in the feed. |
 | BullMQ / Redis | Extra service; per-project serialisation would be hand-rolled anyway; Postgres does it with one partial index (decision 2026-09-22). |
 
-## 9. Open points (not blocking the foundation plan)
+## 9. Open points
 
-- Default `limits` for MAGGuarantee: `reportsPerUserPerDay = 5`, `maxAttachments = 5`, `maxAttachmentBytes = 10 MB`, images + PDF only — confirm.
-- Report code format `MAGG-42` — confirm the prefix and whether ideas get a separate prefix (`MAGG-I-7`) or share the sequence (current design: shared).
-- `TriageStatus.IN_PROGRESS` — keep or drop to the four states of PLAN.md §9.2.
+Resolved 2026-09-22 (user): default limits as in §3.4 · report code = `<first four letters of the project name>-<number>` (`MAGG-42`, `MAGS-42`), one sequence per project for bugs and ideas · `TriageStatus.IN_PROGRESS` stays · the owner cabinet UI is English and Polish (i18n dictionary as in MAGSpace; not a DB question).
+
+Still open, none blocking the foundation plan:
+
 - Whether the owner should be able to hand-pick the current run instead of "latest successful wins" (4.6).
-- Owner cabinet UI language (Russian assumed; not a DB question).
+- `reportLocale` is per project (default `ru`, the owner's language). If the boss becomes a recipient of idea reports, the language may need to be per report kind — a second column (`reportLocaleIdea`) at that point, no redesign.

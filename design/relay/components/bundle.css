@@ -1,0 +1,326 @@
+/* Relay UI — слой компонентов поверх tokens.css.
+   Только классы, без JS: всё состояние задаётся атрибутами (aria-selected,
+   data-state, disabled) или модификаторами. Подключать после tokens.css. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.rl-root {
+  background: var(--surface-100);
+  color: var(--ink-100);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 21px;
+  -webkit-font-smoothing: antialiased;
+}
+.rl-root :focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- служебное ---------------------------------------------------------- */
+.rl-eyebrow { text-transform: uppercase; color: var(--ink-300); }
+.rl-muted { color: var(--ink-300); }
+.rl-dim { color: var(--ink-200); }
+.rl-mono { font-family: var(--font-mono); }
+.rl-row { display: flex; align-items: center; gap: var(--space-2); }
+.rl-spread { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.rl-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.rl-sep { height: 1px; background: var(--line-soft); border: 0; margin: 0; }
+.rl-grid-bg {
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+}
+
+/* --- логотип ------------------------------------------------------------ */
+.rl-mark { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-100); }
+.rl-mark svg { color: var(--accent-100); display: block; }
+.rl-mark b {
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+}
+
+/* --- панель ------------------------------------------------------------- */
+.rl-panel {
+  background: var(--surface-200);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+}
+.rl-panel--raised { box-shadow: var(--shadow-panel); }
+.rl-panel__head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line-soft);
+}
+.rl-panel__title { font-size: 16px; line-height: 22px; font-weight: 600; margin: 0; }
+.rl-panel__body { padding: var(--space-5); }
+.rl-panel__body--flush { padding: 0; }
+.rl-panel__foot {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--line-soft);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+}
+
+/* --- кнопка ------------------------------------------------------------- */
+.rl-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: var(--control-md); padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-300);
+  color: var(--ink-100);
+  font-family: var(--font-sans); font-size: 13px; line-height: 16px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background 120ms linear, border-color 120ms linear;
+}
+.rl-btn:hover { background: var(--surface-400); }
+.rl-btn--primary {
+  background: var(--accent-100); border-color: var(--accent-100); color: var(--on-accent);
+}
+.rl-btn--primary:hover { background: var(--accent-200); border-color: var(--accent-200); color: var(--on-accent); }
+.rl-btn--ghost { background: transparent; }
+.rl-btn--ghost:hover { background: var(--neutral-soft); }
+.rl-btn--quiet { background: transparent; border-color: transparent; color: var(--ink-200); }
+.rl-btn--quiet:hover { background: var(--neutral-soft); color: var(--ink-100); }
+.rl-btn--danger { background: transparent; border-color: var(--danger-100); color: var(--danger-100); }
+.rl-btn--danger:hover { background: var(--danger-soft); }
+.rl-btn--sm { height: var(--control-sm); padding: 0 var(--space-3); font-size: 12px; }
+.rl-btn--lg { height: var(--control-lg); padding: 0 var(--space-5); font-size: 14px; }
+.rl-btn--block { width: 100%; }
+.rl-btn[disabled], .rl-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+.rl-btn svg { display: block; }
+
+/* --- поля --------------------------------------------------------------- */
+.rl-field { display: flex; flex-direction: column; gap: var(--space-2); }
+.rl-label { font-size: 13px; line-height: 16px; font-weight: 600; color: var(--ink-100); }
+.rl-label span { color: var(--ink-300); font-weight: 400; }
+.rl-input, .rl-textarea, .rl-select {
+  width: 100%;
+  background: var(--surface-300);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-100);
+  font-family: var(--font-sans); font-size: 14px; line-height: 21px;
+  padding: 0 var(--space-3);
+  height: var(--control-md);
+}
+.rl-textarea { height: auto; min-height: 96px; padding: var(--space-3); resize: vertical; }
+.rl-select { appearance: none; padding-right: var(--space-6); cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 18px center, right 13px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.rl-input::placeholder, .rl-textarea::placeholder { color: var(--ink-300); }
+.rl-input:focus, .rl-textarea:focus, .rl-select:focus { outline: 2px solid var(--focus-ring); outline-offset: 1px; border-color: transparent; }
+.rl-input--mono, .rl-textarea--mono { font-family: var(--font-mono); font-size: 13px; line-height: 20px; }
+.rl-hint { font-size: 12px; line-height: 16px; color: var(--ink-300); }
+.rl-hint--error { color: var(--danger-100); }
+.rl-field[data-state="error"] .rl-input,
+.rl-field[data-state="error"] .rl-textarea { border-color: var(--danger-100); }
+.rl-counter { font-family: var(--font-mono); font-size: 11px; color: var(--ink-300); }
+
+/* --- бейджи ------------------------------------------------------------- */
+.rl-badge {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: 22px; padding: 0 10px;
+  border-radius: var(--radius-pill);
+  background: var(--neutral-soft); color: var(--ink-200);
+  font-size: 12px; line-height: 16px; font-weight: 600; white-space: nowrap;
+}
+.rl-badge__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.rl-badge--ok { background: var(--success-soft); color: var(--success-100); }
+.rl-badge--info { background: var(--info-soft); color: var(--info-100); }
+.rl-badge--warn { background: var(--warn-soft); color: var(--warn-100); }
+.rl-badge--danger { background: var(--danger-soft); color: var(--danger-100); }
+.rl-badge--accent { background: var(--accent-soft); color: var(--accent-100); }
+
+.rl-sev {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: 22px; padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid currentColor;
+  font-family: var(--font-mono); font-size: 11px; line-height: 16px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-300);
+}
+.rl-sev--crit { color: var(--danger-100); background: var(--danger-soft); }
+.rl-sev--high { color: var(--warn-100); background: var(--warn-soft); }
+.rl-sev--med { color: var(--info-100); background: var(--info-soft); }
+.rl-sev--low { color: var(--ink-300); background: var(--neutral-soft); }
+
+.rl-chip {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: var(--control-sm); padding: 0 10px;
+  border-radius: var(--radius-sm);
+  background: var(--neutral-soft); color: var(--ink-200);
+  font-family: var(--font-mono); font-size: 11px; line-height: 16px;
+}
+.rl-chip b { color: var(--ink-100); font-weight: 400; }
+
+/* --- вкладки ------------------------------------------------------------ */
+.rl-tabs { display: flex; gap: var(--space-1); border-bottom: 1px solid var(--line-soft); }
+.rl-tab {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  padding: 0 var(--space-3); height: 38px;
+  color: var(--ink-300); font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.rl-tab:hover { color: var(--ink-100); }
+.rl-tab[aria-selected="true"] { color: var(--ink-100); border-bottom-color: var(--accent-100); }
+
+.rl-seg { display: inline-flex; padding: 3px; gap: 3px; background: var(--surface-300); border-radius: var(--radius-md); border: 1px solid var(--line-soft); }
+.rl-seg button {
+  appearance: none; border: 0; cursor: pointer; background: transparent;
+  height: 28px; padding: 0 var(--space-3); border-radius: 6px;
+  color: var(--ink-200); font-family: var(--font-sans); font-size: 12px; font-weight: 600;
+}
+.rl-seg button[aria-pressed="true"] { background: var(--surface-100); color: var(--ink-100); box-shadow: inset 0 0 0 1px var(--line-strong); }
+
+/* --- переключатель ------------------------------------------------------ */
+.rl-switch { display: inline-flex; align-items: center; gap: var(--space-3); cursor: pointer; }
+.rl-switch__track {
+  width: 38px; height: 22px; border-radius: var(--radius-pill); flex: none;
+  background: var(--surface-400); border: 1px solid var(--line-strong);
+  position: relative; transition: background 120ms linear, border-color 120ms linear;
+}
+.rl-switch__track::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%; background: var(--ink-300);
+  transition: transform 120ms ease, background 120ms linear;
+}
+.rl-switch[data-state="on"] .rl-switch__track { background: var(--accent-100); border-color: var(--accent-100); }
+.rl-switch[data-state="on"] .rl-switch__track::after { transform: translateX(16px); background: var(--on-accent); }
+
+/* --- таблица ------------------------------------------------------------ */
+.rl-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.rl-table th {
+  text-align: left; font-size: 11px; line-height: 14px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-300);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--surface-000);
+  white-space: nowrap;
+}
+.rl-table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+.rl-table tbody tr:hover { background: var(--surface-400); }
+.rl-table tbody tr[aria-selected="true"] { background: var(--surface-400); box-shadow: inset 2px 0 0 var(--accent-100); }
+.rl-table .rl-num { font-family: var(--font-mono); font-size: 13px; text-align: right; color: var(--ink-200); }
+.rl-table .rl-id { font-family: var(--font-mono); font-size: 13px; color: var(--accent-100); }
+
+/* --- показатели --------------------------------------------------------- */
+.rl-stat { background: var(--surface-200); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: var(--space-4); }
+.rl-stat__label { font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-300); }
+.rl-stat__value { font-family: var(--font-mono); font-size: 26px; line-height: 30px; font-weight: 500; letter-spacing: -0.01em; margin-top: var(--space-2); }
+.rl-stat__note { font-size: 12px; line-height: 16px; color: var(--ink-300); margin-top: var(--space-1); }
+.rl-stat--accent .rl-stat__value { color: var(--accent-100); }
+.rl-stat--danger .rl-stat__value { color: var(--danger-100); }
+
+.rl-meter { height: 6px; border-radius: var(--radius-pill); background: var(--surface-400); overflow: hidden; }
+.rl-meter > i { display: block; height: 100%; background: var(--accent-100); border-radius: inherit; }
+.rl-meter--warn > i { background: var(--warn-100); }
+.rl-meter--danger > i { background: var(--danger-100); }
+
+/* --- колаут ------------------------------------------------------------- */
+.rl-callout {
+  display: flex; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-soft);
+  background: var(--neutral-soft);
+  font-size: 13px; line-height: 19px; color: var(--ink-200);
+}
+.rl-callout b { display: block; color: var(--ink-100); font-size: 13px; }
+.rl-callout__icon { flex: none; width: 18px; height: 18px; margin-top: 1px; color: var(--ink-300); }
+.rl-callout--info { background: var(--info-soft); border-color: transparent; }
+.rl-callout--info .rl-callout__icon { color: var(--info-100); }
+.rl-callout--warn { background: var(--warn-soft); border-color: transparent; }
+.rl-callout--warn .rl-callout__icon { color: var(--warn-100); }
+.rl-callout--danger { background: var(--danger-soft); border-color: transparent; }
+.rl-callout--danger .rl-callout__icon { color: var(--danger-100); }
+.rl-callout--ok { background: var(--success-soft); border-color: transparent; }
+.rl-callout--ok .rl-callout__icon { color: var(--success-100); }
+
+/* --- дропзона ----------------------------------------------------------- */
+.rl-drop {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: 104px; padding: var(--space-4);
+  border: 1px dashed var(--line-strong); border-radius: var(--radius-md);
+  background: var(--surface-300); color: var(--ink-300); text-align: center; cursor: pointer;
+}
+.rl-drop:hover, .rl-drop[data-state="over"] { border-color: var(--accent-100); color: var(--ink-200); background: var(--accent-soft); }
+.rl-file {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  background: var(--surface-300);
+  font-family: var(--font-mono); font-size: 12px; color: var(--ink-200);
+}
+.rl-file__x { margin-left: auto; color: var(--ink-300); background: none; border: 0; cursor: pointer; font-size: 14px; line-height: 1; }
+
+/* --- код и JSON --------------------------------------------------------- */
+.rl-code {
+  background: var(--surface-000);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-family: var(--font-mono); font-size: 12px; line-height: 20px;
+  color: var(--ink-200);
+  overflow: auto; margin: 0;
+  tab-size: 2;
+}
+.rl-code .k { color: var(--info-100); }
+.rl-code .s { color: var(--accent-100); }
+.rl-code .n { color: var(--warn-100); }
+.rl-code .b { color: var(--danger-100); }
+.rl-code .p { color: var(--ink-300); }
+
+/* --- каркас админки ----------------------------------------------------- */
+.rl-shell { display: flex; min-height: 100%; background: var(--surface-100); }
+.rl-side {
+  width: var(--sidebar-w); flex: none;
+  background: var(--surface-000);
+  border-right: 1px solid var(--line-soft);
+  padding: var(--space-5) var(--space-4);
+  display: flex; flex-direction: column; gap: var(--space-5);
+}
+.rl-nav { display: flex; flex-direction: column; gap: 2px; }
+.rl-nav__group { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-300); padding: var(--space-3) var(--space-3) var(--space-1); }
+.rl-nav a {
+  display: flex; align-items: center; gap: var(--space-3);
+  height: 34px; padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--ink-200); text-decoration: none;
+  font-size: 13px; font-weight: 600;
+}
+.rl-nav a:hover { background: var(--neutral-soft); color: var(--ink-100); }
+.rl-nav a[aria-current="page"] { background: var(--accent-soft); color: var(--accent-100); }
+.rl-nav a .rl-nav__count { margin-left: auto; font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--ink-300); }
+.rl-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.rl-topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--surface-100);
+}
+.rl-content { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+.rl-h1 { font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+
+/* --- выдвижная панель --------------------------------------------------- */
+.rl-drawer {
+  width: var(--drawer-w); flex: none;
+  background: var(--surface-200);
+  border-left: 1px solid var(--line-soft);
+  box-shadow: var(--shadow-pop);
+  display: flex; flex-direction: column;
+}
+.rl-drawer__head { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--line-soft); }
+.rl-drawer__body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-5); }
+
+/* --- пара «ключ — значение» --------------------------------------------- */
+.rl-kv { display: grid; grid-template-columns: 128px 1fr; gap: var(--space-2) var(--space-4); font-size: 13px; }
+.rl-kv dt { color: var(--ink-300); }
+.rl-kv dd { margin: 0; color: var(--ink-100); }

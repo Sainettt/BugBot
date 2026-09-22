@@ -1,0 +1,62 @@
+<!-- @dsCard group="Данные" height=440 subtitle="Сводка ИИ человеческим языком и контекст JSON" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .wrap { max-width: 640px; }
+  .sum { font-size: 14px; line-height: 21px; color: var(--ink-100); margin: 0 0 16px; }
+  .sum + .rl-kv { margin-bottom: 16px; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="wrap">
+    <div class="rl-tabs" role="tablist" style="margin-bottom:16px">
+      <button class="rl-tab" role="tab" aria-selected="true">Сводка</button>
+      <button class="rl-tab" role="tab" aria-selected="false">Контекст JSON</button>
+      <button class="rl-tab" role="tab" aria-selected="false">Письмо</button>
+    </div>
+
+    <p class="sum">
+      Сохранение заявки падает на валидации сервера: поле <span class="rl-mono">supplier_id</span>
+      приходит строкой, а API ждёт число. Клиент откатывает форму и не показывает ошибку,
+      поэтому человеку кажется, что данные просто исчезли. Повторяется на всех заявках,
+      созданных из шаблона.
+    </p>
+
+    <dl class="rl-kv">
+      <dt>Компонент</dt><dd>orders / save-draft</dd>
+      <dt>Похожие</dt><dd>RLY-2402, RLY-2310</dd>
+      <dt>Что делать</dt><dd>Привести тип <span class="rl-mono">supplier_id</span> на клиенте и показать ошибку валидации.</dd>
+      <dt>Уверенность</dt><dd>0.82</dd>
+    </dl>
+
+    <div class="bar">
+      <span class="rl-eyebrow" style="font-size:11px;font-weight:600;letter-spacing:.12em">context.json</span>
+      <span class="rl-row">
+        <span class="rl-mono" style="font-size:11px;color:var(--ink-300)">18 420 токенов · 6,4 с</span>
+        <button class="rl-btn rl-btn--sm rl-btn--ghost">Скачать</button>
+      </span>
+    </div>
+
+<pre class="rl-code"><span class="p">{</span>
+  <span class="k">"report_id"</span><span class="p">:</span> <span class="s">"RLY-2481"</span><span class="p">,</span>
+  <span class="k">"severity"</span><span class="p">:</span> <span class="s">"critical"</span><span class="p">,</span>
+  <span class="k">"confidence"</span><span class="p">:</span> <span class="n">0.82</span><span class="p">,</span>
+  <span class="k">"component"</span><span class="p">:</span> <span class="s">"orders/save-draft"</span><span class="p">,</span>
+  <span class="k">"reproducible"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span>
+  <span class="k">"root_cause"</span><span class="p">:</span> <span class="s">"type_mismatch: supplier_id"</span><span class="p">,</span>
+  <span class="k">"duplicates"</span><span class="p">:</span> <span class="p">[</span><span class="s">"RLY-2402"</span><span class="p">,</span> <span class="s">"RLY-2310"</span><span class="p">],</span>
+  <span class="k">"env"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="k">"app"</span><span class="p">:</span> <span class="s">"MAGGuarantee"</span><span class="p">,</span>
+    <span class="k">"version"</span><span class="p">:</span> <span class="s">"2.14.3"</span><span class="p">,</span>
+    <span class="k">"route"</span><span class="p">:</span> <span class="s">"/orders/4821"</span>
+  <span class="p">},</span>
+  <span class="k">"usage"</span><span class="p">:</span> <span class="p">{</span> <span class="k">"tokens"</span><span class="p">:</span> <span class="n">18420</span><span class="p">,</span> <span class="k">"ms"</span><span class="p">:</span> <span class="n">6412</span> <span class="p">}</span>
+<span class="p">}</span></pre>
+  </div>
+</body>
+</html>

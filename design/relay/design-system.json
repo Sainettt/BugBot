@@ -1,0 +1,25 @@
+{
+  "v": 3,
+  "assetGroups": {},
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-09-22T09:25:19Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [],
+  "lastChange": {
+    "at": "2026-09-22T09:25:19Z",
+    "by": "Sainet",
+    "note": "Первая сборка: токены, 12 компонентов на чистом CSS, 4 страницы-макета",
+    "via": "Cowork"
+  },
+  "layout": "files",
+  "libraries": [],
+  "namespace": "Relay",
+  "sections": {},
+  "title": "Relay"
+}

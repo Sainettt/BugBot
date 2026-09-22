@@ -1,0 +1,46 @@
+<!-- @dsCard group="Основа" height=280 subtitle="Пустая зона и список вложений" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 760px; }
+  .files { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="wrap">
+    <div class="rl-field">
+      <span class="rl-label">Скриншот или файл</span>
+      <div class="rl-drop" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V4m0 0L6.5 7.5M10 4l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M3.5 13v2.5h13V13" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div style="font-size:13px">Перетащите файл или нажмите</div>
+        <div style="font-size:12px">PNG, JPG, PDF, LOG · до 10 МБ</div>
+      </div>
+      <div class="rl-hint">Скриншот с ошибкой экономит ИИ целый круг уточнений.</div>
+    </div>
+
+    <div class="rl-field">
+      <span class="rl-label">Приложено · 2 файла</span>
+      <div class="rl-drop" data-state="over" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V4m0 0L6.5 7.5M10 4l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M3.5 13v2.5h13V13" stroke="currentColor" stroke-width="1.5"/></svg>
+        <div style="font-size:13px">Отпустите, чтобы добавить</div>
+      </div>
+      <div class="files">
+        <div class="rl-file">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="m3.5 11 3-3 2.5 2.5L11 9l1.5 1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+          order-save-error.png <span class="rl-muted">· 284 КБ</span>
+          <button class="rl-file__x" aria-label="Убрать файл">✕</button>
+        </div>
+        <div class="rl-file">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 2.5h5l3 3v8H4v-11Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M9 2.5v3.2h3.2" stroke="currentColor" stroke-width="1.3"/></svg>
+          console.log <span class="rl-muted">· 12 КБ</span>
+          <button class="rl-file__x" aria-label="Убрать файл">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

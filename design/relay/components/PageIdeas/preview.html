@@ -1,0 +1,232 @@
+<!-- @dsCard group="Страницы" height=1000 width=1240 page subtitle="Предложения: тихая страница для одного разбирающего" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .frame { height: 1000px; }
+  .who { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+  .who i { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-100);
+           display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; }
+  .cols { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 32px; align-items: start; }
+  .feed { display: flex; flex-direction: column; gap: 16px; max-width: 660px; }
+  .idea { padding: 20px 24px; cursor: pointer; }
+  .idea[aria-current="true"] { border-color: var(--accent-200); }
+  .idea .meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-300); }
+  .idea .avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--neutral-soft); color: var(--ink-200);
+                  display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+  .idea p { font-size: 15px; line-height: 23px; color: var(--ink-100); margin: 12px 0 0; }
+  .idea .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+  .idea .acts { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+  .read { opacity: .62; }
+  .side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 0; }
+  .scale { display: grid; grid-template-columns: 62px 1fr auto; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-300); }
+  .scale .v { font-family: var(--font-mono); font-size: 11px; color: var(--ink-200); }
+</style>
+</head>
+<body class="rl-root">
+<div class="rl-shell frame">
+
+  <aside class="rl-side">
+    <span class="rl-mark">
+      <svg width="24" height="20" viewBox="0 0 26 20" fill="none" aria-hidden="true">
+        <path d="M2 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        <path d="M10 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".45"/>
+        <circle cx="22.5" cy="10" r="2" fill="currentColor"/>
+      </svg>
+      <b>Relay</b>
+    </span>
+    <nav class="rl-nav">
+      <div class="rl-nav__group">Поток</div>
+      <a href="#">Репорты <span class="rl-nav__count">18</span></a>
+      <a href="#" aria-current="page">Предложения <span class="rl-nav__count">6</span></a>
+      <div class="rl-nav__group">Система</div>
+      <a href="#">Конфигурация</a>
+      <a href="#">Журнал анализа</a>
+    </nav>
+    <div class="who">
+      <i>ДФ</i>
+      <div>
+        <div style="font-size:13px;font-weight:600">Данило Ф.</div>
+        <div style="font-size:11px;color:var(--ink-300)">Разбирает предложения</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="rl-main">
+    <header class="rl-topbar">
+      <div>
+        <h1 class="rl-h1">Предложения</h1>
+        <div style="font-size:13px;color:var(--ink-300);margin-top:4px">
+          Шесть новых за неделю. Severity здесь нет — только идеи и что с ними делать.
+        </div>
+      </div>
+      <div class="rl-seg" role="group" aria-label="Фильтр">
+        <button aria-pressed="true">Новые</button>
+        <button aria-pressed="false">В бэклоге</button>
+        <button aria-pressed="false">Все</button>
+      </div>
+    </header>
+
+    <div class="rl-content">
+      <div class="cols">
+
+        <div class="feed">
+
+          <article class="rl-panel idea" aria-current="true">
+            <div class="meta">
+              <span class="avatar">ИК</span>
+              <span>Ирина К. · снабжение</span>
+              <span>·</span>
+              <span>MAGGuarantee · web</span>
+              <span>·</span>
+              <span>вчера</span>
+            </div>
+            <p>Можно ли сделать так, чтобы заявка запоминала последнего перевозчика по маршруту?
+               Каждый раз выбираю одного и того же из списка на 200 строк, а маршрут повторяется
+               по три раза в неделю.</p>
+            <div class="tags">
+              <span class="rl-badge">Экономия времени</span>
+              <span class="rl-badge">Заявки</span>
+              <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Разобрано ИИ</span>
+            </div>
+            <div class="acts">
+              <span class="rl-hint">Похожих предложений: 2</span>
+              <div class="rl-row">
+                <button class="rl-btn rl-btn--sm rl-btn--quiet">Отложить</button>
+                <button class="rl-btn rl-btn--sm">Открыть разбор</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="rl-panel idea">
+            <div class="meta">
+              <span class="avatar">ПМ</span>
+              <span>Павел М. · логистика</span>
+              <span>·</span>
+              <span>MAGGuarantee · API</span>
+              <span>·</span>
+              <span>2 дня назад</span>
+            </div>
+            <p>Добавьте выгрузку рейсов в Excel прямо из фильтра, который я настроил.
+               Сейчас приходится копировать из таблицы по кускам.</p>
+            <div class="tags">
+              <span class="rl-badge">Отчётность</span>
+              <span class="rl-badge">Экспорт</span>
+              <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Разобрано ИИ</span>
+            </div>
+            <div class="acts">
+              <span class="rl-hint">Похожих предложений: 1</span>
+              <div class="rl-row">
+                <button class="rl-btn rl-btn--sm rl-btn--quiet">Отложить</button>
+                <button class="rl-btn rl-btn--sm">Открыть разбор</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="rl-panel idea">
+            <div class="meta">
+              <span class="avatar">АВ</span>
+              <span>Анна В. · бухгалтерия</span>
+              <span>·</span>
+              <span>Внутренний портал</span>
+              <span>·</span>
+              <span>3 дня назад</span>
+            </div>
+            <p>Хочу видеть, кто последний менял карточку контрагента. Иногда данные меняются,
+               и непонятно, к кому идти с вопросом.</p>
+            <div class="tags">
+              <span class="rl-badge">Прозрачность</span>
+              <span class="rl-badge">Контрагенты</span>
+              <span class="rl-badge rl-badge--warn"><i class="rl-badge__dot"></i>Нужны детали</span>
+            </div>
+            <div class="acts">
+              <span class="rl-hint">ИИ не уверен в формулировке</span>
+              <div class="rl-row">
+                <button class="rl-btn rl-btn--sm rl-btn--quiet">Отложить</button>
+                <button class="rl-btn rl-btn--sm">Открыть разбор</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="rl-panel idea read">
+            <div class="meta">
+              <span class="avatar">СД</span>
+              <span>Сергей Д. · склад</span>
+              <span>·</span>
+              <span>Склад · терминал</span>
+              <span>·</span>
+              <span>неделю назад</span>
+            </div>
+            <p>Сделайте крупнее шрифт на терминале — со стремянки не видно строку статуса.</p>
+            <div class="tags">
+              <span class="rl-badge">Интерфейс</span>
+              <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>В бэклоге</span>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="side">
+          <section class="rl-panel rl-panel--raised">
+            <header class="rl-panel__head">
+              <h3 class="rl-panel__title">Разбор предложения</h3>
+              <span class="rl-mono" style="font-size:11px;color:var(--ink-300)">RLI-118</span>
+            </header>
+            <div class="rl-panel__body" style="display:flex;flex-direction:column;gap:20px">
+
+              <p style="margin:0;font-size:14px;line-height:21px">
+                Просьба о запоминании последнего перевозчика по маршруту. Экономит выбор из длинного
+                списка на повторяющихся направлениях; затрагивает форму заявки и историю маршрутов.
+                Две похожие просьбы за квартал от снабжения.
+              </p>
+
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="scale">
+                  <span>Ценность</span>
+                  <span class="rl-meter"><i style="width:80%"></i></span>
+                  <span class="v">высокая</span>
+                </div>
+                <div class="scale">
+                  <span>Трудозатраты</span>
+                  <span class="rl-meter rl-meter--warn"><i style="width:35%"></i></span>
+                  <span class="v">1–2 дня</span>
+                </div>
+              </div>
+
+              <dl class="rl-kv">
+                <dt>Тема</dt><dd>Заявки / автозаполнение</dd>
+                <dt>Похожие</dt><dd class="rl-mono">RLI-092, RLI-071</dd>
+                <dt>Задевает</dt><dd>Форма заявки, история маршрутов</dd>
+                <dt>Разбор</dt><dd class="rl-mono">3 120 токенов · 2,1 с</dd>
+              </dl>
+
+              <div class="rl-field">
+                <label class="rl-label" for="i-ans">Ответ автору <span>· по желанию</span></label>
+                <textarea class="rl-textarea" id="i-ans" rows="3" placeholder="Одно-два предложения — уйдёт письмом Ирине."></textarea>
+              </div>
+
+              <div class="rl-row" style="gap:8px">
+                <button class="rl-btn rl-btn--primary">В бэклог</button>
+                <button class="rl-btn">Отложить</button>
+                <button class="rl-btn rl-btn--quiet">Отклонить</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="rl-callout">
+            <svg class="rl-callout__icon" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M9 8v5M9 5.5v.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <div>Предложения не уходят письмом. Раз в неделю приходит дайджест — чтобы
+              страница оставалась местом, куда заходят подумать, а не реагировать.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!-- @dsCard group="Каркас" height=330 subtitle="Шапка, тело, подвал" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; max-width: 840px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="wrap">
+    <section class="rl-panel">
+      <header class="rl-panel__head">
+        <h3 class="rl-panel__title">Уведомления</h3>
+        <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Включены</span>
+      </header>
+      <div class="rl-panel__body">
+        <p style="margin:0 0 16px;color:var(--ink-200);font-size:14px;line-height:21px">
+          Письмо администратору уходит сразу после разбора. В теме — идентификатор,
+          проект и severity, в теле — краткая сводка и ссылка на JSON.
+        </p>
+        <dl class="rl-kv">
+          <dt>Получатель</dt><dd class="rl-mono">admin@magtrans.pl</dd>
+          <dt>Порог</dt><dd>severity ≥ medium</dd>
+          <dt>Дайджест</dt><dd>ежедневно, 09:00</dd>
+        </dl>
+      </div>
+      <footer class="rl-panel__foot">
+        <span class="rl-hint">Последнее письмо — 12 минут назад</span>
+        <button class="rl-btn rl-btn--sm">Отправить тест</button>
+      </footer>
+    </section>
+
+    <section class="rl-panel rl-panel--raised">
+      <header class="rl-panel__head">
+        <h3 class="rl-panel__title">Очередь анализа</h3>
+        <button class="rl-btn rl-btn--sm rl-btn--quiet">Обновить</button>
+      </header>
+      <div class="rl-panel__body">
+        <div class="rl-stat__label">Ожидают</div>
+        <div class="rl-stat__value">3</div>
+        <div class="rl-stat__note">Среднее время в очереди — 41 с</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

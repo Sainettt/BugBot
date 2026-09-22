@@ -1,0 +1,66 @@
+<!-- @dsCard group="Каркас" height=460 width=900 subtitle="Сайдбар, верхняя панель, контент" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .frame { height: 460px; overflow: hidden; }
+  .who { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+  .who i { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-100);
+           display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="rl-shell frame">
+    <aside class="rl-side">
+      <span class="rl-mark">
+        <svg width="24" height="20" viewBox="0 0 26 20" fill="none" aria-hidden="true">
+          <path d="M2 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+          <path d="M10 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".45"/>
+          <circle cx="22.5" cy="10" r="2" fill="currentColor"/>
+        </svg>
+        <b>Relay</b>
+      </span>
+
+      <nav class="rl-nav">
+        <div class="rl-nav__group">Поток</div>
+        <a href="#" aria-current="page">Репорты <span class="rl-nav__count">18</span></a>
+        <a href="#">Предложения <span class="rl-nav__count">6</span></a>
+        <div class="rl-nav__group">Система</div>
+        <a href="#">Конфигурация</a>
+        <a href="#">Журнал анализа</a>
+      </nav>
+
+      <div class="who">
+        <i>ДФ</i>
+        <div>
+          <div style="font-size:13px;font-weight:600">Данило Ф.</div>
+          <div style="font-size:11px;color:var(--ink-300)">Администратор</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="rl-main">
+      <header class="rl-topbar">
+        <h1 class="rl-h1">Репорты</h1>
+        <div class="rl-row">
+          <span class="rl-badge rl-badge--accent"><i class="rl-badge__dot"></i>Анализ включён</span>
+          <button class="rl-btn rl-btn--sm">Экспорт</button>
+        </div>
+      </header>
+      <div class="rl-content">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div class="rl-stat"><div class="rl-stat__label">За 24 ч</div><div class="rl-stat__value">18</div></div>
+          <div class="rl-stat rl-stat--accent"><div class="rl-stat__label">Разобрано</div><div class="rl-stat__value">16</div></div>
+          <div class="rl-stat"><div class="rl-stat__label">Токенов</div><div class="rl-stat__value">412k</div></div>
+        </div>
+        <section class="rl-panel rl-grid-bg" style="height:150px;display:grid;place-items:center;color:var(--ink-300);font-size:13px">
+          Область контента страницы
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

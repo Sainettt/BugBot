@@ -1,0 +1,156 @@
+<!-- @dsCard group="Страницы" height=1120 width=900 page subtitle="Публичная форма: сюда попадают из других приложений" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-100); }
+  .page { min-height: 1120px; padding: 0 0 48px; }
+  .top {
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--surface-000);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .hero { padding: 48px 32px 24px; max-width: 684px; margin: 0 auto; }
+  .hero .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-100); }
+  .hero h1 { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 600; letter-spacing: -.02em; margin: 12px 0 0; }
+  .hero p { font-size: 14px; line-height: 21px; color: var(--ink-200); margin: 12px 0 0; max-width: 520px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .body { max-width: 684px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 24px; }
+  .form { display: flex; flex-direction: column; gap: 20px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .foot-note { font-size: 12px; line-height: 16px; color: var(--ink-300); text-align: center; }
+  .after { border-top: 1px dashed var(--line-strong); margin-top: 24px; padding-top: 24px; }
+  .after .cap { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-300); margin-bottom: 12px; }
+  .receipt { text-align: left; }
+  .steps { display: flex; flex-direction: column; gap: 0; margin: 16px 0 0; padding: 0; list-style: none; }
+  .steps li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line-soft); font-size: 13px; line-height: 19px; }
+  .steps li:first-child { border-top: 0; }
+  .steps .n { font-family: var(--font-mono); font-size: 11px; color: var(--ink-300); width: 16px; flex: none; padding-top: 2px; }
+  .steps b { display: block; font-size: 13px; }
+  .steps span { color: var(--ink-300); font-size: 12px; }
+</style>
+</head>
+<body class="rl-root">
+<div class="page">
+
+  <header class="top">
+    <span class="rl-mark">
+      <svg width="24" height="20" viewBox="0 0 26 20" fill="none" aria-hidden="true">
+        <path d="M2 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/>
+        <path d="M10 3l6 7-6 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" opacity=".45"/>
+        <circle cx="22.5" cy="10" r="2" fill="currentColor"/>
+      </svg>
+      <b>Relay</b>
+    </span>
+    <span class="rl-row" style="font-size:12px;color:var(--ink-300)">
+      Вы вошли как <span class="rl-mono" style="color:var(--ink-200)">i.kowalczyk@magtrans.pl</span>
+    </span>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">MAGGuarantee · сообщение о проблеме</div>
+    <h1>Что пошло не так?</h1>
+    <p>Опишите своими словами. Технические детали Relay соберёт сам, разберёт и передаст
+       администратору — возвращаться сюда и следить за статусом не нужно.</p>
+    <div class="chips">
+      <span class="rl-chip">приложение <b>MAGGuarantee</b></span>
+      <span class="rl-chip">версия <b>2.14.3</b></span>
+      <span class="rl-chip">экран <b>/orders/4821</b></span>
+      <span class="rl-chip">браузер <b>Chrome 141</b></span>
+    </div>
+  </section>
+
+  <div class="body">
+    <section class="rl-panel rl-panel--raised">
+      <div class="rl-panel__body">
+        <div class="form">
+
+          <div class="rl-field">
+            <label class="rl-label" for="p-title">Коротко — что сломалось</label>
+            <input class="rl-input" id="p-title" placeholder="Например: не сохраняется заявка на закупку">
+          </div>
+
+          <div class="rl-field">
+            <label class="rl-label" for="p-what">Что произошло</label>
+            <textarea class="rl-textarea" id="p-what" rows="5" placeholder="Что вы делали, что ожидали увидеть и что увидели вместо этого."></textarea>
+            <div class="rl-spread">
+              <span class="rl-hint">Чем конкретнее шаги, тем точнее разбор.</span>
+              <span class="rl-counter">0 / 4000</span>
+            </div>
+          </div>
+
+          <div class="split">
+            <div class="rl-field">
+              <span class="rl-label">Насколько мешает</span>
+              <div class="rl-seg" role="group" aria-label="Насколько мешает">
+                <button aria-pressed="false">Мелочь</button>
+                <button aria-pressed="true">Мешает</button>
+                <button aria-pressed="false">Блокирует</button>
+              </div>
+              <div class="rl-hint">Ваша оценка. Severity ИИ выставит отдельно.</div>
+            </div>
+
+            <div class="rl-field">
+              <label class="rl-label" for="p-when">Когда это случилось</label>
+              <select class="rl-select" id="p-when">
+                <option>Только что</option>
+                <option>Сегодня</option>
+                <option>На этой неделе</option>
+                <option>Повторяется давно</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="rl-field">
+            <span class="rl-label">Скриншот или файл <span>· по желанию</span></span>
+            <div class="rl-drop" tabindex="0">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V4m0 0L6.5 7.5M10 4l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/><path d="M3.5 13v2.5h13V13" stroke="currentColor" stroke-width="1.5"/></svg>
+              <div style="font-size:13px">Перетащите файл или нажмите</div>
+              <div style="font-size:12px">PNG, JPG, PDF, LOG · до 10 МБ</div>
+            </div>
+          </div>
+
+          <div class="rl-callout">
+            <svg class="rl-callout__icon" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M9 8v5M9 5.5v.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <div>К отчёту приложится технический контекст: версия, экран, браузер и последние
+              действия в приложении. Пароли и платёжные данные в него не попадают.</div>
+          </div>
+
+        </div>
+      </div>
+      <footer class="rl-panel__foot" style="display:block;padding:20px 24px">
+        <button class="rl-btn rl-btn--primary rl-btn--lg rl-btn--block">Отправить отчёт</button>
+        <div class="foot-note" style="margin-top:12px">
+          Разбор занимает меньше минуты. Ответ придёт на вашу почту, если понадобятся детали.
+        </div>
+      </footer>
+    </section>
+
+    <div class="after">
+      <div class="cap">Что человек видит после отправки</div>
+      <section class="rl-panel receipt">
+        <div class="rl-panel__body">
+          <div class="rl-spread" style="margin-bottom:16px">
+            <div class="rl-row">
+              <span class="rl-badge rl-badge--ok"><i class="rl-badge__dot"></i>Отчёт принят</span>
+              <span class="rl-id rl-mono">RLY-2481</span>
+            </div>
+            <button class="rl-btn rl-btn--sm rl-btn--quiet">Сообщить ещё раз</button>
+          </div>
+          <div style="font-size:20px;line-height:26px;font-weight:600">Спасибо, дальше мы сами</div>
+          <ul class="steps">
+            <li><span class="n">01</span><div><b>Отчёт принят</b><span>только что · контекст собран</span></div></li>
+            <li><span class="n">02</span><div><b>Разбирает ИИ</b><span>обычно меньше минуты</span></div></li>
+            <li><span class="n">03</span><div><b>Уходит администратору</b><span>письмо и карточка в Relay</span></div></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

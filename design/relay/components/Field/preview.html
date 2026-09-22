@@ -1,0 +1,56 @@
+<!-- @dsCard group="Основа" height=430 subtitle="Ввод, многострочный ввод, селект, ошибка" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Space+Grotesk:wght@600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; padding: 24px; background: var(--surface-100); }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 760px; }
+  .col { display: flex; flex-direction: column; gap: 20px; }
+</style>
+</head>
+<body class="rl-root">
+  <div class="wrap">
+    <div class="col">
+      <div class="rl-field">
+        <label class="rl-label" for="f1">Заголовок проблемы</label>
+        <input class="rl-input" id="f1" value="Не сохраняется заявка на закупку">
+        <div class="rl-hint">Одной строкой — что именно сломалось.</div>
+      </div>
+
+      <div class="rl-field">
+        <label class="rl-label" for="f2">Проект <span>· обязательно</span></label>
+        <select class="rl-select" id="f2">
+          <option>MAGGuarantee · web</option>
+          <option>MAGGuarantee · API</option>
+          <option>Внутренний портал</option>
+        </select>
+      </div>
+
+      <div class="rl-field" data-state="error">
+        <label class="rl-label" for="f3">E-mail администратора</label>
+        <input class="rl-input" id="f3" value="admin@">
+        <div class="rl-hint rl-hint--error">Нужен полный адрес — сюда уйдёт письмо от ИИ.</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="rl-field">
+        <label class="rl-label" for="f4">Что произошло</label>
+        <textarea class="rl-textarea" id="f4" rows="5">Нажимаю «Сохранить» в карточке заявки — страница мигает, данные откатываются к прошлым значениям.</textarea>
+        <div class="rl-spread">
+          <span class="rl-hint">Шаги, что ожидали, что получили.</span>
+          <span class="rl-counter">128 / 4000</span>
+        </div>
+      </div>
+
+      <div class="rl-field">
+        <label class="rl-label" for="f5">Ingest-ключ</label>
+        <input class="rl-input rl-input--mono" id="f5" value="rly_live_8f42c1a9d0e7" readonly>
+        <div class="rl-hint">Только чтение. Отозвать и выпустить новый — в карточке проекта.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
