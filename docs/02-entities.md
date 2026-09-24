@@ -1,6 +1,6 @@
 # 02 — Entities & Database Design
 
-Status: **design v1, 2026-09-22 — nothing migrated yet.** This is the plan for the Prisma schema; the schema file will be written from it in `docs/plans/01-foundation.md`. Product context: [`PLAN.md`](../PLAN.md) (Russian), [01-idea.md](01-idea.md). Decisions referenced below live in [04-decisions.md](04-decisions.md).
+Status: **implemented 2026-09-24 (plan 01, slice 2).** The schema of §7 is `apps/api/prisma/schema.prisma`; migrations `20260924113438_init` (generated) and `20260924113500_add_integrity_rules` (hand-written, §5). This document stays the explanation of *why* the shape is what it is; when the two disagree, the schema file wins and this file gets fixed. Product context: [`PLAN.md`](../PLAN.md) (Russian), [01-idea.md](01-idea.md). Decisions referenced below live in [04-decisions.md](04-decisions.md).
 
 ## 0. Principles
 
@@ -236,7 +236,7 @@ Storage layout: `<projectId>/<reportId>/<attachmentId>.<ext>` on a volume the ru
 | `requestedById` | FK → User? | The owner who pressed "Send to Claude" or "Rerun". Always set in v1 — no job is created automatically; nullable for a later automatic mode. |
 | `createdAt`, `updatedAt`, `finishedAt?` | | |
 
-Indexes: `(status, runAfter, priority desc, createdAt)` for dequeue · `reportId` · `(projectId, status)`. **Raw-SQL migration:** `CREATE UNIQUE INDEX job_one_running_per_project ON "Job" ("projectId") WHERE status = 'RUNNING';` — this index *is* the "one analysis per project at a time" rule (4.3).
+Indexes: `(status, runAfter, priority desc, createdAt)` for dequeue · `reportId` · `(projectId, status)`. **Raw-SQL migration:** `CREATE UNIQUE INDEX "Job_one_running_per_project" ON "Job" ("projectId") WHERE status = 'RUNNING';` — this index *is* the "one analysis per project at a time" rule (4.3).
 
 ### 3.12 `AgentRun`
 

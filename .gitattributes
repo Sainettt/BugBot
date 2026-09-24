@@ -1,0 +1,8 @@
+# LF in the repository and in every checkout, regardless of the machine's core.autocrlf.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.webp binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

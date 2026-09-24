@@ -1,0 +1,446 @@
+// BugBot — Prisma schema v1 (plan 01 foundation). Source of truth for the shape: docs/02-entities.md.
+// Enums mirror packages/shared/src/enums.ts — keep the two in sync by hand.
+// Cross-row rules that Prisma cannot express (one RUNNING job per project, at most one actor
+// per history event, positive report numbers) live in the hand-written migration
+// `add_integrity_rules` next to the generated `init`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OwnerRole {
+  OWNER
+}
+
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum RunnerMode {
+  SHARED
+  DEDICATED
+}
+
+enum ReportKind {
+  BUG
+  IDEA
+}
+
+enum AnalysisStatus {
+  NOT_SENT
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+enum TriageStatus {
+  NEW
+  SEEN
+  IN_PROGRESS
+  HANDLED
+  ARCHIVED
+}
+
+enum JobType {
+  ANALYZE
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+  CANCELLED
+}
+
+enum RunStatus {
+  RUNNING
+  DONE
+  FAILED
+  TIMEOUT
+  CANCELLED
+}
+
+enum NotificationKind {
+  REPORT_RECEIVED
+  ANALYSIS_DONE
+  ANALYSIS_FAILED
+}
+
+enum NotificationChannel {
+  EMAIL
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum Operation {
+  OWNER_LOGIN
+  SETTING_UPDATE
+  PROJECT_CREATE
+  PROJECT_UPDATE
+  PROJECT_STATUS
+  PROMPT_VERSION_CREATE
+  PROMPT_VERSION_ACTIVATE
+  PROJECT_USER_BLOCK
+  PROJECT_USER_UNBLOCK
+  REPORT_CREATE
+  REPORT_TRIAGE
+  REPORT_ANALYZE
+  REPORT_RERUN
+  JOB_CANCEL
+}
+
+/// Owner account. Sign-in = Google id_token + e-mail in ADMIN_EMAILS; the row is created on first login.
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String?
+  role           OwnerRole       @default(OWNER)
+  isActive       Boolean         @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  sessions       OwnerSession[]
+  historyEvents  HistoryEvent[]
+  promptVersions PromptVersion[]
+  requestedJobs  Job[]
+  triagedReports Report[]
+  settings       AppSetting[]
+}
+
+model OwnerSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  userAgent String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model AppSetting {
+  key         String   @id
+  value       Json
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  updatedBy   User?    @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+}
+
+/// A connected project. One row = one project; JSON columns are validated by zod schemas in packages/shared.
+model Project {
+  id                    String             @id @default(cuid())
+  slug                  String             @unique
+  name                  String
+  codePrefix            String             @unique
+  status                ProjectStatus      @default(ACTIVE)
+  timezone              String             @default("Europe/Warsaw")
+  formLocale            String             @default("pl")
+  reportLocale          String             @default("ru")
+  repoUrl               String
+  repoDefaultBranch     String             @default("main")
+  repoSubpath           String?
+  /// NAME of the env variable holding the deploy key / token — never the value.
+  repoAuthEnv           String?
+  repoReadFirst         String[]
+  providerKey           String             @default("claude-code")
+  modelBug              String             @default("opus")
+  modelIdea             String             @default("opus")
+  effort                String?
+  maxTurns              Int                @default(60)
+  timeoutSec            Int                @default(900)
+  budgetUsd             Decimal            @default(5) @db.Decimal(10, 2)
+  toolProfile           String             @default("read-only")
+  providerConfig        Json               @default("{}")
+  runnerMode            RunnerMode         @default(SHARED)
+  authAdapter           String             @default("handoff-jwt")
+  authConfig            Json
+  formConfig            Json
+  notificationConfig    Json
+  limits                Json
+  reportCounter         Int                @default(0)
+  activePromptVersionId String?            @unique
+  activePromptVersion   PromptVersion?     @relation("ProjectActivePrompt", fields: [activePromptVersionId], references: [id], onDelete: SetNull)
+  promptVersions        PromptVersion[]    @relation("ProjectPromptVersions")
+  users                 ProjectUser[]
+  sessions              ProjectSession[]
+  usedHandoffTokens     UsedHandoffToken[]
+  reports               Report[]
+  attachments           Attachment[]
+  jobs                  Job[]
+  runs                  AgentRun[]
+  notifications         Notification[]
+  historyEvents         HistoryEvent[]
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+}
+
+/// Immutable. Editing creates a new version; Project.activePromptVersionId selects the live one.
+model PromptVersion {
+  id           String     @id @default(cuid())
+  projectId    String
+  project      Project    @relation("ProjectPromptVersions", fields: [projectId], references: [id])
+  version      Int
+  brief        String
+  bugOverride  String?
+  ideaOverride String?
+  note         String?
+  createdById  String?
+  createdBy    User?      @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now())
+  activeFor    Project?   @relation("ProjectActivePrompt")
+  runs         AgentRun[]
+
+  @@unique([projectId, version])
+}
+
+/// A connected project's user as seen through handoff tokens. The project is the source of truth for roles.
+model ProjectUser {
+  id            String           @id @default(cuid())
+  projectId     String
+  project       Project          @relation(fields: [projectId], references: [id])
+  externalId    String
+  email         String?
+  name          String?
+  roles         String[]
+  locale        String?
+  isBlocked     Boolean          @default(false)
+  blockedReason String?
+  firstSeenAt   DateTime         @default(now())
+  lastSeenAt    DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  sessions      ProjectSession[]
+  reports       Report[]
+  historyEvents HistoryEvent[]
+
+  @@unique([projectId, externalId])
+  @@index([projectId, email])
+}
+
+model ProjectSession {
+  id            String      @id @default(cuid())
+  projectId     String
+  project       Project     @relation(fields: [projectId], references: [id])
+  projectUserId String
+  projectUser   ProjectUser @relation(fields: [projectUserId], references: [id], onDelete: Cascade)
+  expiresAt     DateTime
+  userAgent     String?
+  ip            String?
+  createdAt     DateTime    @default(now())
+
+  @@index([projectUserId])
+  @@index([projectId, expiresAt])
+}
+
+/// Replay protection: the insert inside the verification transaction fails on a reused jti.
+model UsedHandoffToken {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  jti       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, jti])
+  @@index([expiresAt])
+}
+
+/// A bug or an idea. Core columns + self-describing `fields` snapshot + reporter snapshot + two statuses.
+model Report {
+  id              String         @id @default(cuid())
+  projectId       String
+  project         Project        @relation(fields: [projectId], references: [id])
+  number          Int
+  clientRequestId String?
+  kind            ReportKind
+  title           String
+  description     String
+  fields          Json
+  locale          String?
+  targetRef       String?
+  projectUserId   String
+  projectUser     ProjectUser    @relation(fields: [projectUserId], references: [id])
+  reporterEmail   String?
+  reporterName    String?
+  reporterRoles   String[]
+  analysisStatus  AnalysisStatus @default(NOT_SENT)
+  currentRunId    String?        @unique
+  currentRun      AgentRun?      @relation("ReportCurrentRun", fields: [currentRunId], references: [id], onDelete: SetNull)
+  triageStatus    TriageStatus   @default(NEW)
+  ownerNote       String?
+  triagedById     String?
+  triagedBy       User?          @relation(fields: [triagedById], references: [id], onDelete: SetNull)
+  triagedAt       DateTime?
+  attachments     Attachment[]
+  jobs            Job[]
+  runs            AgentRun[]     @relation("ReportRuns")
+  notifications   Notification[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([projectId, number])
+  @@unique([projectId, clientRequestId])
+  @@index([projectId, createdAt(sort: Desc)])
+  @@index([projectId, kind])
+  @@index([projectId, analysisStatus])
+  @@index([projectId, triageStatus])
+  @@index([triageStatus, createdAt(sort: Desc)])
+  @@index([projectUserId, createdAt])
+}
+
+model Attachment {
+  id         String   @id @default(cuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id])
+  reportId   String
+  report     Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  storageKey String   @unique
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  sha256     String?
+  width      Int?
+  height     Int?
+  createdAt  DateTime @default(now())
+
+  @@index([reportId])
+}
+
+/// Queue row. Partial unique index (raw migration) enforces one RUNNING job per project.
+model Job {
+  id            String     @id @default(cuid())
+  projectId     String
+  project       Project    @relation(fields: [projectId], references: [id])
+  reportId      String
+  report        Report     @relation(fields: [reportId], references: [id])
+  type          JobType    @default(ANALYZE)
+  status        JobStatus  @default(QUEUED)
+  priority      Int        @default(0)
+  attempt       Int        @default(0)
+  maxAttempts   Int        @default(2)
+  runAfter      DateTime   @default(now())
+  lockedAt      DateTime?
+  lockedBy      String?
+  heartbeatAt   DateTime?
+  options       Json?
+  lastError     String?
+  requestedById String?
+  requestedBy   User?      @relation(fields: [requestedById], references: [id], onDelete: SetNull)
+  runs          AgentRun[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  finishedAt    DateTime?
+
+  @@index([status, runAfter, priority(sort: Desc), createdAt])
+  @@index([reportId])
+  @@index([projectId, status])
+}
+
+/// One execution of the agent. Everything needed to reproduce and to bill.
+model AgentRun {
+  id                  String         @id @default(cuid())
+  projectId           String
+  project             Project        @relation(fields: [projectId], references: [id])
+  reportId            String
+  report              Report         @relation("ReportRuns", fields: [reportId], references: [id])
+  jobId               String
+  job                 Job            @relation(fields: [jobId], references: [id])
+  status              RunStatus      @default(RUNNING)
+  providerKey         String
+  model               String
+  effort              String?
+  toolProfile         String
+  promptVersionId     String?
+  promptVersion       PromptVersion? @relation(fields: [promptVersionId], references: [id])
+  basePresetVersion   String
+  resultSchemaVersion String
+  promptSnapshot      String?
+  repoRef             String
+  repoCommit          String?
+  startedAt           DateTime       @default(now())
+  finishedAt          DateTime?
+  durationMs          Int?
+  inputTokens         Int?
+  outputTokens        Int?
+  cacheReadTokens     Int?
+  cacheWriteTokens    Int?
+  numTurns            Int?
+  costUsd             Decimal?       @db.Decimal(10, 4)
+  stopReason          String?
+  resultJson          Json?
+  resultValid         Boolean        @default(false)
+  resultMd            String?
+  repairAttempted     Boolean        @default(false)
+  error               String?
+  log                 String?
+  logBytes            Int?
+  logPurgedAt         DateTime?
+  logStorageKey       String?
+  currentFor          Report?        @relation("ReportCurrentRun")
+  notifications       Notification[]
+  createdAt           DateTime       @default(now())
+
+  @@index([reportId, startedAt(sort: Desc)])
+  @@index([projectId, startedAt])
+  @@index([status])
+  @@index([jobId])
+}
+
+/// Outgoing message about a report or a run. Unique per (run, kind, channel, recipient) = no duplicate e-mails.
+model Notification {
+  id                String              @id @default(cuid())
+  projectId         String
+  project           Project             @relation(fields: [projectId], references: [id])
+  reportId          String
+  report            Report              @relation(fields: [reportId], references: [id])
+  runId             String?
+  run               AgentRun?           @relation(fields: [runId], references: [id])
+  kind              NotificationKind
+  channel           NotificationChannel @default(EMAIL)
+  recipient         String
+  status            NotificationStatus  @default(PENDING)
+  attempts          Int                 @default(0)
+  providerMessageId String?
+  error             String?
+  sentAt            DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@unique([runId, kind, channel, recipient])
+  @@index([status, createdAt])
+}
+
+/// Audit log. One user action = one groupId spanning several events. At most one actor (CHECK in raw migration).
+model HistoryEvent {
+  id                 String       @id @default(cuid())
+  groupId            String
+  actorUserId        String?
+  actorUser          User?        @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  actorProjectUserId String?
+  actorProjectUser   ProjectUser? @relation(fields: [actorProjectUserId], references: [id], onDelete: SetNull)
+  projectId          String?
+  project            Project?     @relation(fields: [projectId], references: [id])
+  operation          Operation
+  entityType         String
+  entityId           String
+  payload            Json
+  createdAt          DateTime     @default(now())
+
+  @@index([entityType, entityId])
+  @@index([projectId, createdAt])
+  @@index([createdAt])
+}
