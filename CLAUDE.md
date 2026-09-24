@@ -4,9 +4,9 @@
 
 ## What this project is
 
-**BugBot** — a multi-project bug-report and idea triage platform for MAGTRANS internal apps. A user of a connected project (first: MAGGuarantee; next: MAGSpace) files a bug on `/p/<slug>/alarm`; the project's admin files an idea on `/p/<slug>/ideas`. The report is queued; an analysis agent with a git clone of that project's repository returns a structured, code-grounded report (root cause + fix plan for bugs; impact + risks + plan for ideas). The owner reads it in the cabinet `/admin` and gets an e-mail. **The plan is the product; everything else is scaffolding.**
+**BugBot** — a multi-project bug-report and idea triage platform for MAGTRANS internal apps. A user of a connected project (first: MAGGuarantee; next: MAGSpace) files a bug on `/p/<slug>/alarm`; the project's admin files an idea on `/p/<slug>/ideas`. The owner is e-mailed and presses "Send to Claude" in the cabinet; an analysis agent with a git clone of that project's repository returns a structured, code-grounded report (root cause + fix plan for bugs; impact + risks + plan for ideas). The owner reads it in the cabinet `/admin` and gets an e-mail. **The plan is the product; everything else is scaffolding.**
 
-Two invariants: **connecting a project = configuration, not code** · **the analysis agent is read-only** (no writes, no secrets of the analysed project, hard time and budget caps).
+Three invariants: **connecting a project = configuration, not code** · **the analysis agent is read-only** (no writes, no secrets of the analysed project, hard time and budget caps) · **no automatic analysis** — every agent run is started by the owner's "Send to Claude" in the cabinet (decision 2026-09-24: the runner uses the owner's Claude subscription via `claude setup-token`, and the manual trigger keeps that within personal use; automatic queueing returns with API-key billing).
 
 The repository is still called `MAGGuaranteeBugBot`; renaming to `BugBot` is pending (PLAN.md §13).
 
@@ -18,7 +18,7 @@ The repository is still called `MAGGuaranteeBugBot`; renaming to `BugBot` is pen
 
 ## Stack & layout (decided 2026-09-22)
 
-pnpm monorepo: `apps/api` (NestJS + Prisma + PostgreSQL — HTTP API and the queue worker) · `apps/web` (Next.js App Router) · `apps/agent-runner` (one git clone per project + agent providers; first provider = Claude Code headless `claude -p`) · `packages/shared` (result JSON schemas, project-config schemas, provider / auth-adapter / handoff-token contracts, enums mirrored from Prisma). Deployment target: the company VPS, docker-compose behind the TLS proxy, like MAGGuarantee and MAGSpace. **Nothing is scaffolded yet** — plans in `docs/plans/` set the order.
+pnpm monorepo: `apps/api` (NestJS + Prisma + PostgreSQL — HTTP API and the queue worker) · `apps/web` (Next.js App Router) · `apps/agent-runner` (one git clone per project + agent providers; first provider = Claude Code headless `claude -p`; model Opus for bugs and ideas, `fable` optional per project; auth = subscription token in `CLAUDE_CODE_OAUTH_TOKEN` — decisions 2026-09-24) · `packages/shared` (result JSON schemas, project-config schemas, provider / auth-adapter / handoff-token contracts, enums mirrored from Prisma). Deployment target: the company VPS, docker-compose behind the TLS proxy, like MAGGuarantee and MAGSpace. **Nothing is scaffolded yet** — plans in `docs/plans/` set the order.
 
 ## Where to look
 

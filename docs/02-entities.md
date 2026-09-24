@@ -73,15 +73,15 @@ erDiagram
 | `ProjectStatus` | `ACTIVE`, `PAUSED`, `ARCHIVED` | `PAUSED`: forms refuse new reports, queued jobs wait. `ARCHIVED`: sessions revoked, queued jobs cancelled, everything read-only. |
 | `RunnerMode` | `SHARED`, `DEDICATED` | Which runner container serves the project's workspace. |
 | `ReportKind` | `BUG`, `IDEA` | Selects the form, the preset, the result schema and the model. |
-| `AnalysisStatus` | `QUEUED`, `RUNNING`, `DONE`, `FAILED` | Denormalised on `Report` from the latest job so lists need no join. |
+| `AnalysisStatus` | `NOT_SENT`, `QUEUED`, `RUNNING`, `DONE`, `FAILED` | Denormalised on `Report` from the latest job so lists need no join. `NOT_SENT` = received, no job yet: the owner has not pressed "Send to Claude" (decision 2026-09-24). |
 | `TriageStatus` | `NEW`, `SEEN`, `IN_PROGRESS`, `HANDLED`, `ARCHIVED` | The owner's own state. |
 | `JobType` | `ANALYZE` | Only one type in v1; the enum keeps the queue generic (later: `REPO_CHECK`, `TEST_RUN`). |
 | `JobStatus` | `QUEUED`, `RUNNING`, `DONE`, `FAILED`, `CANCELLED` | |
 | `RunStatus` | `RUNNING`, `DONE`, `FAILED`, `TIMEOUT`, `CANCELLED` | `FAILED` = provider error or invalid result; `TIMEOUT` = killed by the runner or declared dead by the sweeper. |
-| `NotificationKind` | `ANALYSIS_DONE`, `ANALYSIS_FAILED` | `REPORT_RECEIVED` (before analysis) is deliberately not in v1 — the cabinet's `NEW` badge covers it. |
+| `NotificationKind` | `REPORT_RECEIVED`, `ANALYSIS_DONE`, `ANALYSIS_FAILED` | `REPORT_RECEIVED` goes to the recipients of the report's kind on submission, with a link to the card — the owner must learn there is something to send to Claude (decision 2026-09-24). |
 | `NotificationChannel` | `EMAIL` | Telegram / Slack are later values. |
 | `NotificationStatus` | `PENDING`, `SENT`, `FAILED` | |
-| `Operation` | `OWNER_LOGIN`, `SETTING_UPDATE`, `PROJECT_CREATE`, `PROJECT_UPDATE`, `PROJECT_STATUS`, `PROMPT_VERSION_CREATE`, `PROMPT_VERSION_ACTIVATE`, `PROJECT_USER_BLOCK`, `PROJECT_USER_UNBLOCK`, `REPORT_CREATE`, `REPORT_TRIAGE`, `REPORT_RERUN`, `JOB_CANCEL` | Audit operations. |
+| `Operation` | `OWNER_LOGIN`, `SETTING_UPDATE`, `PROJECT_CREATE`, `PROJECT_UPDATE`, `PROJECT_STATUS`, `PROMPT_VERSION_CREATE`, `PROMPT_VERSION_ACTIVATE`, `PROJECT_USER_BLOCK`, `PROJECT_USER_UNBLOCK`, `REPORT_CREATE`, `REPORT_TRIAGE`, `REPORT_ANALYZE`, `REPORT_RERUN`, `JOB_CANCEL` | Audit operations. `REPORT_ANALYZE` = the owner pressed "Send to Claude" (first run). |
 
 ## 3. Entities in detail
 
@@ -124,11 +124,11 @@ One wide row: typed columns for everything the worker, runner and guards query; 
 | | `repoAuthEnv` | String? | **Name** of the env variable holding the deploy key / token. Null = public repo. |
 | | `repoReadFirst` | String[] | Files the agent is told to read first: `CLAUDE.md`, `docs/INDEX.md`. |
 | agent | `providerKey` | String = `claude-code` | Key of a provider registered in code. |
-| | `modelBug`, `modelIdea` | String | Model ids per report kind (may be equal). |
+| | `modelBug`, `modelIdea` | String = `opus`, `opus` | Model per report kind, in the form the provider's CLI accepts: an alias (`opus`, `fable`) or a full id (`claude-opus-5-5`). Both default to Opus (decision 2026-09-24); `fable` is the per-project option for ideas. |
 | | `effort` | String? | Provider-specific effort level, if supported. |
 | | `maxTurns` | Int | |
 | | `timeoutSec` | Int | Hard cap enforced by the runner; the sweeper uses `timeoutSec + grace`. |
-| | `budgetUsd` | Decimal(10,2) | Per run. |
+| | `budgetUsd` | Decimal(10,2) | Per run, passed as `--max-budget-usd`. Real money only with an API key; under a subscription token it caps the CLI's list-price estimate, and `maxTurns` / `timeoutSec` are the effective limits. |
 | | `toolProfile` | String = `read-only` | Named tool allow-list defined in code. |
 | | `providerConfig` | Json | Extras the provider understands (e.g. extra allowed tools, CLI flags). |
 | | `runnerMode` | `RunnerMode` = `SHARED` | |
@@ -200,7 +200,7 @@ Why a table instead of columns on `Report`: per-user rate limits need a stable k
 | reporter | `projectUserId` | FK → ProjectUser (restrict) | |
 | | `reporterEmail`, `reporterName` | String? | Snapshot at submission — `ProjectUser` changes later. |
 | | `reporterRoles` | String[] | Snapshot; the role matters for the analysis (MAGGuarantee behaves per role). |
-| pipeline | `analysisStatus` | `AnalysisStatus` = `QUEUED` | Mirrors the latest job. |
+| pipeline | `analysisStatus` | `AnalysisStatus` = `NOT_SENT` | Mirrors the latest job; `NOT_SENT` until the owner presses "Send to Claude". |
 | | `currentRunId` | String?, unique, FK → AgentRun | Latest **successful** run. History stays in `AgentRun`. |
 | owner | `triageStatus` | `TriageStatus` = `NEW` | |
 | | `ownerNote` | String? | |
@@ -233,7 +233,7 @@ Storage layout: `<projectId>/<reportId>/<attachmentId>.<ext>` on a volume the ru
 | `heartbeatAt` | DateTime? | Updated by the worker every 30 s while running. |
 | `options` | Json? | Rerun overrides: `{ model?, promptVersionId?, targetRef?, effort? }`. |
 | `lastError` | String? | Short error code + message; the long story is in `AgentRun`. |
-| `requestedById` | FK → User? | Null = created automatically with the report; set for reruns. |
+| `requestedById` | FK → User? | The owner who pressed "Send to Claude" or "Rerun". Always set in v1 — no job is created automatically; nullable for a later automatic mode. |
 | `createdAt`, `updatedAt`, `finishedAt?` | | |
 
 Indexes: `(status, runAfter, priority desc, createdAt)` for dequeue · `reportId` · `(projectId, status)`. **Raw-SQL migration:** `CREATE UNIQUE INDEX job_one_running_per_project ON "Job" ("projectId") WHERE status = 'RUNNING';` — this index *is* the "one analysis per project at a time" rule (4.3).
@@ -245,7 +245,7 @@ Indexes: `(status, runAfter, priority desc, createdAt)` for dequeue · `reportId
 | identity | `id` | cuid | |
 | | `projectId`, `reportId`, `jobId` | FKs | A job with retries has several runs; `jobId` is indexed, not unique. |
 | | `status` | `RunStatus` | |
-| what ran | `providerKey`, `model`, `effort?`, `toolProfile` | String | Effective values after job overrides. |
+| what ran | `providerKey`, `model`, `effort?`, `toolProfile` | String | Effective values after job overrides. `model` is the concrete id the provider reports in its per-model usage (`claude-opus-5-5`), never the alias from the config. |
 | | `promptVersionId` | FK → PromptVersion? (restrict) | The project brief version used. |
 | | `basePresetVersion` | String | `bug@3` — from the preset file header / git. |
 | | `resultSchemaVersion` | String | `bug-result@1`. |
@@ -253,7 +253,7 @@ Indexes: `(status, runAfter, priority desc, createdAt)` for dequeue · `reportId
 | | `repoRef`, `repoCommit` | String, String? | What was analysed. |
 | timing | `startedAt`, `finishedAt?`, `durationMs?` | | |
 | usage | `inputTokens`, `outputTokens`, `cacheReadTokens`, `cacheWriteTokens`, `numTurns` | Int? | From the provider's usage output. |
-| | `costUsd` | Decimal(10,4)? | |
+| | `costUsd` | Decimal(10,4)? | The provider's client-side list-price estimate (`total_cost_usd`); nominal under a subscription token, billed under an API key. |
 | | `stopReason` | String? | Provider's reason: done / max turns / budget / timeout. |
 | result | `resultJson` | Json? | Raw JSON returned by the agent (kept even when invalid, for debugging). |
 | | `resultValid` | Boolean = false | Passed the result schema. |
@@ -284,9 +284,9 @@ Indexes: `(reportId, startedAt desc)` · `(projectId, startedAt)` for monthly co
 2. Validate body against `formConfig.bug`; validate files (count, size, MIME). Reject before touching storage.
 3. Rate limit: `COUNT(Report) WHERE projectUserId = ? AND createdAt >= <start of today in project.timezone>` < `limits.reportsPerUserPerDay`.
 4. Write files to storage under a temp prefix.
-5. One transaction: `UPDATE "Project" SET "reportCounter" = "reportCounter" + 1 WHERE id = ? RETURNING "reportCounter"` (row lock → gap-free numbers per project) · insert `Report` (`fields` snapshot built from `formConfig` labels, reporter snapshot from `ProjectUser`, `analysisStatus = QUEUED`) · insert `Attachment` rows · insert `Job` (`QUEUED`) · insert `HistoryEvent` (`REPORT_CREATE`, actor = project user).
+5. One transaction: `UPDATE "Project" SET "reportCounter" = "reportCounter" + 1 WHERE id = ? RETURNING "reportCounter"` (row lock → gap-free numbers per project) · insert `Report` (`fields` snapshot built from `formConfig` labels, reporter snapshot from `ProjectUser`, `analysisStatus = NOT_SENT`) · insert `Attachment` rows · insert `Notification (REPORT_RECEIVED)` rows for the recipients of the report's kind · insert `HistoryEvent` (`REPORT_CREATE`, actor = project user). No `Job` — analysis starts only when the owner presses "Send to Claude" (4.7).
 6. After commit: move files from the temp prefix to `<projectId>/<reportId>/…`. On any failure before commit: delete the temp files; nothing in the DB.
-7. Response: `{ code: "MAGG-42" }`. No e-mail yet — the cabinet feed shows the `NEW` badge.
+7. Response: `{ code: "MAGG-42" }`. The mailer sends the `REPORT_RECEIVED` e-mail (subject `[MAGG][bug] MAGG-42: title`, link to the card); the cabinet feed shows the `NEW` badge and the "Received" status.
 
 Double click → the same `clientRequestId` → unique violation caught → return the existing report.
 
@@ -327,9 +327,9 @@ The job stays `RUNNING` with a stale `heartbeatAt`. A sweeper (every minute) sel
 
 One transaction: `AgentRun.status = DONE`, `resultMd` rendered, `Report.currentRunId = run.id`, `Report.analysisStatus = DONE`, `Job.status = DONE`, `Notification (ANALYSIS_DONE)` rows for every recipient of the report's kind, `HistoryEvent` if the run was a rerun. **Latest successful run wins** as the current one; earlier runs stay in history and the cabinet can show two side by side. (Alternative considered: the owner picks the current run by hand — more clicks for a rare need; revisit if reruns become routine.)
 
-### 4.7 The owner reruns with another model
+### 4.7 The owner sends a report to Claude — first run and reruns
 
-Cabinet action → insert `Job` (`type = ANALYZE`, `options = { model: "…" }`, `requestedById = owner`) + `HistoryEvent (REPORT_RERUN)`; `Report.analysisStatus = QUEUED`. Refused (409) if the report already has a `QUEUED` or `RUNNING` job. The run records the effective `model` and `promptVersionId` from the options.
+"Send to Claude" on a `NOT_SENT` report and "Rerun with…" on an analysed one are the same action: `POST /admin/reports/:id/analyze` → one transaction: insert `Job` (`type = ANALYZE`, `requestedById = owner`, `options = { model?, promptVersionId?, targetRef?, effort? }` for reruns) + `HistoryEvent` (`REPORT_ANALYZE` for the first run, `REPORT_RERUN` afterwards); `Report.analysisStatus = QUEUED`. Refused (409) if the report already has a `QUEUED` or `RUNNING` job. The run records the effective `model` and `promptVersionId`. There is no other way to create a job in v1: the owner starts every analysis by hand (decision 2026-09-24 — the subscription-use rule).
 
 ### 4.8 The form changes after 200 reports exist
 
@@ -409,12 +409,12 @@ enum OwnerRole { OWNER }
 enum ProjectStatus { ACTIVE PAUSED ARCHIVED }
 enum RunnerMode { SHARED DEDICATED }
 enum ReportKind { BUG IDEA }
-enum AnalysisStatus { QUEUED RUNNING DONE FAILED }
+enum AnalysisStatus { NOT_SENT QUEUED RUNNING DONE FAILED }
 enum TriageStatus { NEW SEEN IN_PROGRESS HANDLED ARCHIVED }
 enum JobType { ANALYZE }
 enum JobStatus { QUEUED RUNNING DONE FAILED CANCELLED }
 enum RunStatus { RUNNING DONE FAILED TIMEOUT CANCELLED }
-enum NotificationKind { ANALYSIS_DONE ANALYSIS_FAILED }
+enum NotificationKind { REPORT_RECEIVED ANALYSIS_DONE ANALYSIS_FAILED }
 enum NotificationChannel { EMAIL }
 enum NotificationStatus { PENDING SENT FAILED }
 enum Operation {
@@ -422,7 +422,7 @@ enum Operation {
   PROJECT_CREATE PROJECT_UPDATE PROJECT_STATUS
   PROMPT_VERSION_CREATE PROMPT_VERSION_ACTIVATE
   PROJECT_USER_BLOCK PROJECT_USER_UNBLOCK
-  REPORT_CREATE REPORT_TRIAGE REPORT_RERUN JOB_CANCEL
+  REPORT_CREATE REPORT_TRIAGE REPORT_ANALYZE REPORT_RERUN JOB_CANCEL
 }
 
 /// Owner account. Sign-in = Google id_token + e-mail in ADMIN_EMAILS; the row is created on first login.
@@ -479,8 +479,8 @@ model Project {
   repoAuthEnv           String?
   repoReadFirst         String[]
   providerKey           String         @default("claude-code")
-  modelBug              String
-  modelIdea             String
+  modelBug              String         @default("opus")
+  modelIdea             String         @default("opus")
   effort                String?
   maxTurns              Int            @default(60)
   timeoutSec            Int            @default(900)
@@ -595,7 +595,7 @@ model Report {
   reporterEmail   String?
   reporterName    String?
   reporterRoles   String[]
-  analysisStatus  AnalysisStatus @default(QUEUED)
+  analysisStatus  AnalysisStatus @default(NOT_SENT)
   currentRunId    String?        @unique
   currentRun      AgentRun?      @relation("ReportCurrentRun", fields: [currentRunId], references: [id], onDelete: SetNull)
   triageStatus    TriageStatus   @default(NEW)
@@ -767,7 +767,7 @@ model HistoryEvent {
 | Storing the project's own JWT secret to verify its tokens | Symmetric secret in BugBot's DB = forgeable sign-ins on a leak; and the project's cookie is not visible cross-domain anyway. |
 | Computing "current run" by query instead of `Report.currentRunId` | Works, but every feed row would need a lateral join; the pointer is set in the same transaction and costs nothing. |
 | A `Draft` entity for pre-uploaded attachments | Not needed with single-request submit (decision 2026-09-22). |
-| `REPORT_RECEIVED` e-mail | The cabinet's `NEW` badge is the inbox; an e-mail per submission would double the noise. Easy to add as a `NotificationKind` later. |
+| Automatic analysis on submission | Deferred 2026-09-24: the owner presses "Send to Claude" per report so that every run is the subscription holder's own action (PLAN.md §6.2). The `REPORT_RECEIVED` e-mail exists for the same reason — the earlier draft skipped it in favour of the `NEW` badge. Automatic queueing returns together with API-key billing. |
 | Global identity across projects for the same e-mail | Privacy and role semantics differ per project; the owner can still search by e-mail in the feed. |
 | BullMQ / Redis | Extra service; per-project serialisation would be hand-rolled anyway; Postgres does it with one partial index (decision 2026-09-22). |
 

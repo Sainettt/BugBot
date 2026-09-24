@@ -49,7 +49,7 @@ Relay's six report badges map onto BugBot's two status fields plus one derived f
 
 | Badge (Relay) | Class | BugBot |
 |---|---|---|
-| Принят | `rl-badge` | only on the public receipt page ("Report received") |
+| Принят | `rl-badge` | `analysisStatus = NOT_SENT` ("Received" — waiting for the owner's "Send to Claude"); also the public receipt page |
 | В очереди | `--info` | `analysisStatus = QUEUED` |
 | Анализируется | `--accent` | `RUNNING` |
 | Разобран | `--ok` | `DONE` |
@@ -78,7 +78,7 @@ Sidebar `sidebar-w` on `surface-000`: mark, nav in two groups — **Flow**: Repo
 - Four tiles (`rl-stat`): Reports · 24 h (note: yesterday's count) · Analysed (`--accent`, note: share without a human) · Failed (`--danger` only when > 0, note: dominant error code) · Tokens · 24 h (note: cost in USD). Period segment 24 h / 7 d / all drives both tiles and list. Queue depth is a badge in the top bar, not a fifth tile.
 - Filters row: search (title, code, reporter), project select, kind select (bug / idea / all), status select, period `rl-seg`, "Reset" quiet button.
 - Table: Report (title + `rl-id` code · project · reporter) · Severity · Status · Tokens (`rl-num`, "—" when no run) · Time (relative). Row click opens the drawer, `aria-selected` marks it. Footer: "Showing 8 of 18" + Back / Next (cursor pagination from `/admin/reports`).
-- Drawer = report card: head (code, severity, status, title, project · reporter · role · time, close), tabs **Summary / Result JSON / E-mail / Original / Runs**. Summary = the result's plain-language summary first, then `rl-kv` (component → `affected_areas`, cause → `root_cause`, similar → later, what to do → `fix_plan` first step, confidence), then the `rl-code` pane with `report.json` (highlighted server-side), usage line `18 420 tokens · 6.4 s · claude-opus-5` and "Download". Then `rl-callout--ok` "E-mail sent · recipients · time" (from `Notification`), then the action buttons of section 3. Runs tab lists every `AgentRun` with model, prompt version, cost and a "Rerun with…" form.
+- Drawer = report card: head (code, severity, status, title, project · reporter · role · time, close), tabs **Summary / Result JSON / E-mail / Original / Runs**. Summary = the result's plain-language summary first, then `rl-kv` (component → `affected_areas`, cause → `root_cause`, similar → later, what to do → `fix_plan` first step, confidence), then the `rl-code` pane with `report.json` (highlighted server-side), usage line `18 420 tokens · 6.4 s · claude-opus-5` and "Download". Then `rl-callout--ok` "E-mail sent · recipients · time" (from `Notification`), then the action buttons of section 3. While the report is `NOT_SENT`, the drawer's only `rl-btn--primary` is **Send to Claude** (`POST /admin/reports/:id/analyze`, decision 2026-09-24) and the Summary tab shows the original fields instead of a result. Runs tab lists every `AgentRun` with model, prompt version, cost and a "Rerun with…" form.
 
 ### 4.3 Ideas (`PageIdeas`) → `/admin/ideas`
 
@@ -108,6 +108,7 @@ Not mocked. Same layout as 4.6 with the idea fields from `formConfig.idea` (what
 |---|---|---|
 | Ingest key + allowed domains | Handoff token verified with the project's public key | Decision 2026-09-22; nobody outside the connected project may report |
 | Fallback model on 429 | Retry with backoff, same model | Not in v1; a `fallbackModel` config field is a later addition |
+| A submitted report is "В очереди" at once | "Received" until the owner presses "Send to Claude" | Decision 2026-09-24: the runner uses the owner's Claude subscription, so every run is the owner's own action; automatic queueing returns with API-key billing |
 | "Write from severity ≥ medium" mail threshold | Every finished run mails the project's recipients | Owner wants everything in the cabinet **and** mailbox; threshold is a later option |
 | Subject template with placeholders | Fixed `[MAGG][bug] MAGG-42: title` | One owner, one format; PLAN.md §4 |
 | Ideas never e-mail, weekly digest | Ideas mail per `notificationConfig.idea.to` | Decision 2026-09-22 (boss may be a recipient) |

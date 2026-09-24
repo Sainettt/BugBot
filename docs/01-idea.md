@@ -8,7 +8,7 @@ Bug reports and change requests for MAGTRANS internal apps arrive as chat messag
 
 - A **reporter** (an employee or an external carrier who has an account in the connected project) files a bug on the project's alarm page.
 - A **project admin** (the boss) files an idea on the project's ideas page.
-- The report is queued. An **analysis agent** with a git clone of the project's repository reads the code and returns a structured, code-grounded report: for a bug — where, why, is it really a bug, confidence, fix plan, tests, risks, questions for the reporter; for an idea — impact areas, risks, 1–3 options, a recommended step-by-step plan, effort, questions for the author.
+- The **owner** gets an e-mail and presses "Send to Claude" in the cabinet — nothing runs automatically (decision 2026-09-24). An **analysis agent** with a git clone of the project's repository reads the code and returns a structured, code-grounded report: for a bug — where, why, is it really a bug, confidence, fix plan, tests, risks, questions for the reporter; for an idea — impact areas, risks, 1–3 options, a recommended step-by-step plan, effort, questions for the author.
 - The **owner** reads it in the cabinet and gets an e-mail with the report attached.
 
 **The plan is the product.** Forms, queue, runner and mail are scaffolding around it.
@@ -21,7 +21,7 @@ BugBot serves many projects. The first is MAGGuarantee (kilometre-guarantee clai
 
 | Role | Who | Does | Where |
 |---|---|---|---|
-| Owner | the BugBot operator (Danyil) | configures projects, reads reports, reruns analyses, triages | `/admin` |
+| Owner | the BugBot operator (Danyil) | configures projects, sends reports to Claude, reads the results, reruns analyses, triages | `/admin` |
 | Project admin | the boss and whoever the project config names | files ideas for their project | `/p/<slug>/ideas` |
 | Reporter | any user of the connected project — employee or external carrier | files bugs | `/p/<slug>/alarm` |
 | Agent | Claude Code (headless) or another provider | reads code, writes the report | agent runner |
@@ -35,6 +35,7 @@ BugBot serves many projects. The first is MAGGuarantee (kilometre-guarantee clai
 
 - The agent never modifies code, commits, or opens pull requests.
 - No conversation with the agent: one report → one analysis (reruns allowed).
+- No automatic analysis: every agent run is started by the owner from the cabinet (the subscription-use rule, PLAN.md §6.2).
 - No public status tracker for reporters.
 - No per-project databases or tables: one schema, every row carries `projectId`.
 
@@ -54,7 +55,7 @@ project A (MAGGuarantee)        project B (MAGSpace)
         │ projects · auth adapters · reports · jobs    │      └──────────┘
         │ agent providers · notifications · storage    │
         └───────────────────────┬──────────────────────┘
-                                │ job (project, report, kind)
+                                │ job (project, report, kind) — created by the owner's "Send to Claude"
         ┌───────────────────────▼──────────────────────┐
         │ apps/agent-runner                            │
         │ /workspaces/<slug> per project               │

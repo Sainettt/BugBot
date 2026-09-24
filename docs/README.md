@@ -13,7 +13,7 @@ Multi-project bug-report and idea triage platform for MAGTRANS internal apps. A 
   - [plans/01-foundation.md](plans/01-foundation.md) — **proposed 2026-09-22** — monorepo skeleton, Postgres in Docker, the full Prisma schema + integrity migration, owner Google sign-in, cabinet shell with EN/PL i18n and the read-only feed, runner stub, tests baseline, CI.
   - 02 — *(planned)* project entity + config page, `handoff-jwt` adapter and project sessions, alarm / ideas forms with attachments; the MAGGuarantee-side button and token endpoint.
   - 03 — *(planned)* agent runner: workspaces, `claude-code` provider, prompt layers and presets, result schemas, manual test run from the cabinet.
-  - 04 — *(planned)* queue worker, sweeper, notifications, triage actions and reruns — the full automatic cycle.
+  - 04 — *(planned)* queue worker, sweeper, notifications, "Send to Claude", triage actions and reruns — the full cycle from a submitted report to the e-mailed plan.
 
 ## Stack
 NestJS · Prisma · PostgreSQL · Next.js (App Router) · Claude Code headless (`claude -p`) as the first agent provider · pnpm monorepo (apps/api, apps/web, apps/agent-runner, packages/shared) · target deployment: company VPS, docker-compose + TLS proxy, like MAGGuarantee and MAGSpace.

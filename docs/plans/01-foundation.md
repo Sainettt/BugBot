@@ -1,6 +1,6 @@
 # Plan 01 — Foundation: monorepo, DB, owner sign-in, app shells
 
-Status: **proposed** (2026-09-22) · executes first; plan 02 (project + handoff + forms) builds on it.
+Status: **in progress** (proposed 2026-09-22; slice 1 — scaffold, Docker, shared — started 2026-09-24) · executes first; plan 02 (project + handoff + forms) builds on it. Executed in three slices with a commit each: (1) scaffold + Docker + shared → (2) api + Prisma + auth + admin endpoints + tests → (3) web + runner stub + CI.
 Goal: a running skeleton — Postgres in Docker, NestJS API with the full Prisma schema from [02-entities.md](../02-entities.md) and the owner's Google sign-in, Next.js cabinet shell with EN/PL i18n, a stub agent-runner package, a shared contracts package, tests wired — and one end-to-end proof: the owner signs in and sees the cabinet's dashboard tiles and (demo) feed rendered from real DB rows.
 
 ## Decisions baked in
@@ -48,7 +48,7 @@ From [04-decisions.md](../04-decisions.md): pnpm monorepo · Prisma + cuid + MAG
 | `AUTH_DEV_USER` | `danyilfiut@gmail.com` | Dev escape hatch (§4.3). Boot **fails** if set with `NODE_ENV=production`. |
 | `SEED_DEMO` | `true` | Demo project + reports in the seed; `false` in production. |
 | `STORAGE_DIR` | `./.data/storage` | Attachment root (plan 02 uses it; declared now so the runner mount is known). |
-| reserved | | `ANTHROPIC_API_KEY`, `RUNNER_URL`, `RUNNER_TOKEN`, `MAIL_*` — declared as comments, used by plans 03–04. |
+| reserved | | `CLAUDE_CODE_OAUTH_TOKEN` (provider auth = subscription token from `claude setup-token`, decision 2026-09-24; `ANTHROPIC_API_KEY` is the later switch to pay-as-you-go and takes precedence — never set both), `RUNNER_URL`, `RUNNER_TOKEN`, `MAIL_*` — declared as comments, used by plans 03–04. |
 
 ## 3. packages/shared — `@bugbot/shared`
 
@@ -77,7 +77,7 @@ ALTER TABLE "Report"       ADD CONSTRAINT "Report_number_positive"    CHECK (num
 ALTER TABLE "HistoryEvent" ADD CONSTRAINT "HistoryEvent_one_actor"    CHECK (NOT ("actorUserId" IS NOT NULL AND "actorProjectUserId" IS NOT NULL));
 ```
 
-- Seed (`prisma/seed.ts`): stable layer always — `AppSetting` rows `maxConcurrentRuns = 1`, `logRetentionDays = 90`, `mailFrom = "bugbot@magtrans.eu"`, `defaultTimezone = "Europe/Warsaw"` (upsert). Under `SEED_DEMO`: project `demo` (`codePrefix DEMO`, `repoUrl` pointing at this repo, placeholder `authConfig` with a throw-away public key, default limits, a minimal `formConfig`, `notificationConfig` to `ADMIN_EMAILS`), one `PromptVersion` v1 activated, one `ProjectUser`, two `Report`s (`DEMO-1` BUG `NEW/QUEUED` with a `QUEUED` job; `DEMO-2` IDEA `SEEN/DONE` with a `DONE` job, a `DONE` `AgentRun` carrying a hand-written valid-looking `resultJson`/`resultMd`, and `currentRunId` set). No real people, no real keys.
+- Seed (`prisma/seed.ts`): stable layer always — `AppSetting` rows `maxConcurrentRuns = 1`, `logRetentionDays = 90`, `mailFrom = "bugbot@magtrans.eu"`, `defaultTimezone = "Europe/Warsaw"` (upsert). Under `SEED_DEMO`: project `demo` (`codePrefix DEMO`, `repoUrl` pointing at this repo, placeholder `authConfig` with a throw-away public key, default limits, a minimal `formConfig`, `notificationConfig` to `ADMIN_EMAILS`), one `PromptVersion` v1 activated, one `ProjectUser`, three `Report`s (`DEMO-1` BUG `NEW/NOT_SENT` with no job — the "Send to Claude" state of decision 2026-09-24, plus its `REPORT_RECEIVED` notification row; `DEMO-2` IDEA `SEEN/DONE` with a `DONE` job, a `DONE` `AgentRun` carrying a hand-written valid-looking `resultJson`/`resultMd`, and `currentRunId` set; `DEMO-3` BUG `NEW/QUEUED` with a `QUEUED` job so the queue badge has a row). No real people, no real keys.
 
 ### 4.3 Owner auth module (`src/auth`)
 Mirrors MAGSpace plan 02, adjusted to the allowlist-in-env decision.
@@ -121,7 +121,7 @@ Mirrors MAGSpace plan 02, adjusted to the allowlist-in-env decision.
 ## 6. apps/agent-runner — `@bugbot/agent-runner` (stub)
 
 - Node 22 + TS service with `GET /health` → `{ ok, workspacesDir, claudeVersion }` (runs `claude --version` once at boot, reports `null` if absent).
-- `Dockerfile`: `node:22-bookworm-slim` + `git` + `@anthropic-ai/claude-code` **pinned to an exact version** (bumped deliberately, never `latest`), non-root user, `/workspaces` and `/attachments` volumes declared. Built in CI but not started by the dev compose.
+- `Dockerfile`: `node:22-bookworm-slim` + `git` + `@anthropic-ai/claude-code` **pinned to an exact version** (≥ 2.1.257 so the `fable` alias exists; bumped deliberately, never `latest`), non-root user, `/workspaces` and `/attachments` volumes declared. Built in CI but not started by the dev compose.
 - `src/provider/` reserved with the interface stub `AgentProvider { run(job): Promise<RunResult> }` typed against `@bugbot/shared` placeholders — plan 03 fills it.
 
 ## 7. CI (GitHub Actions, optional but cheap)
@@ -132,7 +132,7 @@ Mirrors MAGSpace plan 02, adjusted to the allowlist-in-env decision.
 
 `pnpm i && docker compose up -d postgres && pnpm db:migrate && pnpm db:seed && pnpm dev` →
 - `GET :3101/health` → `{ ok: true, db: true }`;
-- `http://localhost:3000/login` → Google sign-in with the allowlisted address (or `AUTH_DEV_USER`) → `/admin` renders the four Relay tiles from the seed (Reports 2 · Analysed 1 · Failed 0 · Tokens from the demo run), the feed with `DEMO-1` and `DEMO-2`, and clicking `DEMO-2` opens the drawer with the seeded summary and JSON; `/admin/ideas`, `/admin/projects`, `/admin/runs` show the seeded rows; EN/PL switch changes every label; dark/light toggle keeps every screen readable; sign-out works;
+- `http://localhost:3000/login` → Google sign-in with the allowlisted address (or `AUTH_DEV_USER`) → `/admin` renders the four Relay tiles from the seed (Reports 3 · Analysed 1 · Failed 0 · Tokens from the demo run), the feed with `DEMO-1` ("Received", the disabled "Send to Claude" button until plan 04), `DEMO-2` and `DEMO-3`, and clicking `DEMO-2` opens the drawer with the seeded summary and JSON; `/admin/ideas`, `/admin/projects`, `/admin/runs` show the seeded rows; EN/PL switch changes every label; dark/light toggle keeps every screen readable; sign-out works;
 - a non-allowlisted Google account lands on `/login?error=not_allowed` and creates no rows;
 - `pnpm lint`, `pnpm build`, `pnpm test` green; `.env` not committed; docs updated (`02-entities.md` header flips from "nothing migrated" to the migration names; `04-decisions.md` gets the calls above once confirmed).
 
