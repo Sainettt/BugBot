@@ -1,0 +1,22 @@
+{
+  "name": "@bugbot/agent-runner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BugBot agent runner: one git clone per project + agent providers (plan 01 stub; plan 03 fills it)",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@bugbot/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

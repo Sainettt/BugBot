@@ -1,6 +1,6 @@
 # Plan 01 — Foundation: monorepo, DB, owner sign-in, app shells
 
-Status: **in progress** (proposed 2026-09-22; slices 1–2 — scaffold, Docker, shared, api with schema, migrations, seed, auth, admin read endpoints, 26 integration tests — done 2026-09-24; slice 3 next) · executes first; plan 02 (project + handoff + forms) builds on it. Executed in three slices with a commit each: (1) scaffold + Docker + shared → (2) api + Prisma + auth + admin endpoints + tests → (3) web + runner stub + CI.
+Status: **done 2026-09-24** (proposed 2026-09-22; executed in three slices with a commit each). The definition of done below is met, with one open manual step: the Google Cloud OAuth client — development runs on `AUTH_DEV_USER` until Danyil creates it. Deviations and calls made while implementing are in [04-decisions.md](../04-decisions.md) (entries of 2026-09-24). · executes first; plan 02 (project + handoff + forms) builds on it. Executed in three slices with a commit each: (1) scaffold + Docker + shared → (2) api + Prisma + auth + admin endpoints + tests → (3) web + runner stub + CI.
 Goal: a running skeleton — Postgres in Docker, NestJS API with the full Prisma schema from [02-entities.md](../02-entities.md) and the owner's Google sign-in, Next.js cabinet shell with EN/PL i18n, a stub agent-runner package, a shared contracts package, tests wired — and one end-to-end proof: the owner signs in and sees the cabinet's dashboard tiles and (demo) feed rendered from real DB rows.
 
 ## Decisions baked in

@@ -1,0 +1,84 @@
+/* Generated from design/relay/tokens.json by scripts/tokens.mjs — do not edit by hand.
+   Relay Relay v1. Dark is the default theme; light is set with
+   data-theme="light" on <html>. Font families come from next/font (src/app/layout.tsx) as
+   --font-display / --font-sans / --font-mono, which the Relay component CSS expects. */
+
+:root {
+  --surface-000: #07090c;
+  --surface-100: #0b0f14;
+  --surface-200: #11161d;
+  --surface-300: #171e27;
+  --surface-400: #1e2731;
+  --line-soft: #1b232c;
+  --line-strong: #2c3947;
+  --ink-100: #e8eef5;
+  --ink-200: #9fb0c0;
+  --ink-300: #70859a;
+  --accent-100: #43e0c0;
+  --accent-200: #1f8f7c;
+  --accent-soft: #43e0c01f;
+  --on-accent: #04130f;
+  --info-100: #4aa8ff;
+  --info-soft: #4aa8ff1f;
+  --warn-100: #f5a524;
+  --warn-soft: #f5a5241f;
+  --danger-100: #ff6b6b;
+  --danger-soft: #ff6b6b1f;
+  --success-100: #3ddc84;
+  --success-soft: #3ddc841f;
+  --neutral-soft: #9fb0c01a;
+  --scrim: #050709cc;
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.02), 0 16px 32px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 24px 60px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 18px rgba(67, 224, 192, 0.18);
+  --focus-ring: var(--accent-100);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --control-sm: 28px;
+  --control-md: 36px;
+  --control-lg: 44px;
+  --sidebar-w: 232px;
+  --drawer-w: 460px;
+  --content-max: 1120px;
+  --form-max: 620px;
+}
+
+:root[data-theme='light'] {
+  --surface-000: #e6ebf1;
+  --surface-100: #f7f9fb;
+  --surface-200: #ffffff;
+  --surface-300: #f1f4f8;
+  --surface-400: #e7ecf2;
+  --line-soft: #e2e8ef;
+  --line-strong: #c3cedb;
+  --ink-100: #0e141b;
+  --ink-200: #41505f;
+  --ink-300: #5d6e7e;
+  --accent-100: #0a7a66;
+  --accent-200: #06564a;
+  --accent-soft: #0a7a6614;
+  --on-accent: #ffffff;
+  --info-100: #1160c4;
+  --info-soft: #1160c414;
+  --warn-100: #8a5a00;
+  --warn-soft: #8a5a0014;
+  --danger-100: #c42a2a;
+  --danger-soft: #c42a2a14;
+  --success-100: #0f7a48;
+  --success-soft: #0f7a4814;
+  --neutral-soft: #41505f12;
+  --scrim: #0e141b66;
+  --shadow-panel: 0 1px 2px rgba(14, 20, 27, 0.06), 0 12px 28px rgba(14, 20, 27, 0.07);
+  --shadow-pop: 0 24px 60px rgba(14, 20, 27, 0.18);
+  --shadow-glow: 0 0 14px rgba(10, 122, 102, 0.14);
+}

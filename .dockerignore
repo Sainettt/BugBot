@@ -1,0 +1,16 @@
+# Build context = repo root (all three Dockerfiles). Everything here stays out of the images.
+.git
+.github
+.claude
+node_modules
+**/node_modules
+**/dist
+**/.next
+**/tsconfig.tsbuildinfo
+.env
+.env.*
+.data
+docs
+design
+*.md
+docker-compose.yml

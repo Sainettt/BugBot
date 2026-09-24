@@ -1,0 +1,105 @@
+/* From design/relay/components/PageIdeas/preview.html, same class names. */
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 32px;
+  align-items: start;
+}
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 660px;
+}
+.idea {
+  padding: 20px 24px;
+  position: relative;
+}
+.idea[aria-current='true'] {
+  border-color: var(--accent-200);
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-300);
+  flex-wrap: wrap;
+}
+.avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--neutral-soft);
+  color: var(--ink-200);
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-style: normal;
+}
+.idea p {
+  font-size: 15px;
+  line-height: 23px;
+  color: var(--ink-100);
+  margin: 12px 0 0;
+}
+.title {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.title a {
+  color: inherit;
+  text-decoration: none;
+}
+.tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.acts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+.read {
+  opacity: 0.62;
+}
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+}
+.scale {
+  display: grid;
+  grid-template-columns: 62px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--ink-300);
+}
+.scaleValue {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-200);
+}
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.sum {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  white-space: pre-wrap;
+}

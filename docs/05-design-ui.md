@@ -122,7 +122,7 @@ Not mocked. Same layout as 4.6 with the idea fields from `formConfig.idea` (what
 
 ## 6. Implementation notes for `apps/web`
 
-- `src/styles/tokens.css`: generated once from `design/relay/tokens.json` by a small script in `apps/web/scripts/tokens.ts` (kept in the repo, re-run on re-sync): `:root` = dark values, `[data-theme="light"]` = light values, font families, spacing, radii, shadows, sizes as `--<name>`.
+- `src/styles/tokens.css`: generated from `design/relay/tokens.json` by `apps/web/scripts/tokens.mjs` (`pnpm --filter @bugbot/web tokens`; the output is committed, re-run on re-sync): `:root` = dark values, `[data-theme="light"]` = light values, font families, spacing, radii, shadows, sizes as `--<name>`.
 - `src/styles/relay.css`: `bundle.css` verbatim plus a header comment with the source version (`1790069834-cd20`). Page-specific CSS from the mockups (`.stats`, `.filters`, `.pitem`, `.mcard`, `.idea`, `.hero`, `.steps`…) becomes CSS modules next to the page that uses it, with the same names.
 - Theme: `data-theme` on `<html>`, toggle in the top bar, persisted in the `theme` cookie; default dark. Light theme must be checked on every screen — the brand book requires 4.5:1 on every text pair in both themes.
 - Icons: inline SVG components in `src/components/icons/`, copied from the previews (search, upload, info, warn, fail, ok, chevron, plus).

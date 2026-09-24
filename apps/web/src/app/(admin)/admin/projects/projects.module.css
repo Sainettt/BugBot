@@ -1,0 +1,63 @@
+/* From design/relay/components/PageConfig/preview.html, same class names. */
+.cols {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.plist {
+  display: flex;
+  flex-direction: column;
+}
+.pitem {
+  display: block;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  padding: 14px 16px;
+  color: var(--ink-100);
+  font-family: inherit;
+  text-decoration: none;
+}
+.pitem:hover {
+  background: var(--surface-400);
+}
+.pitem[aria-current='true'] {
+  background: var(--surface-400);
+  box-shadow: inset 2px 0 0 var(--accent-100);
+}
+.nm {
+  font-size: 14px;
+  font-weight: 600;
+}
+.mt {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink-300);
+  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.kv {
+  grid-template-columns: 180px 1fr;
+}
+.pre {
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--ink-200);
+  margin: 0;
+}
+.kv dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

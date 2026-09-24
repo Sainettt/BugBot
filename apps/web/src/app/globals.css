@@ -1,0 +1,70 @@
+@import './../styles/tokens.css';
+@import './../styles/relay.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Relay's bundle.css styles everything under `.rl-root`; the body carries it (src/app/layout.tsx). */
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+html {
+  background: var(--surface-100);
+  color-scheme: dark;
+}
+html[data-theme='light'] {
+  color-scheme: light;
+}
+body {
+  min-height: 100vh;
+}
+a {
+  color: inherit;
+}
+.rl-shell {
+  min-height: 100vh;
+}
+/* Links styled as Relay buttons and rows keep the button look without the underline. */
+a.rl-btn,
+a.rl-tab {
+  text-decoration: none;
+}
+.rl-tabs a.rl-tab {
+  display: inline-flex;
+  align-items: center;
+}
+.rl-seg a {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: 6px;
+  color: var(--ink-200);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.rl-seg a[aria-current='true'] {
+  background: var(--surface-100);
+  color: var(--ink-100);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+/* Table rows are links: the whole row is one target. */
+.rl-table tbody tr.is-link {
+  cursor: pointer;
+}
+.rl-table tbody tr.is-link a {
+  text-decoration: none;
+}
+.rl-table th.is-right {
+  text-align: right;
+}
+/* The empty state is one ink-300 line inside the panel (brand book). */
+.rl-empty {
+  padding: var(--space-5);
+  color: var(--ink-300);
+  font-size: 13px;
+}
