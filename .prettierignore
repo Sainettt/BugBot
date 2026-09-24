@@ -1,0 +1,14 @@
+# Build output and dependencies
+node_modules/
+dist/
+build/
+.next/
+coverage/
+.data/
+pnpm-lock.yaml
+
+# Verbatim copy of the Relay design system — re-synced from the source, never reformatted.
+design/
+
+# Docs and the plan keep their hand-written table layout.
+*.md

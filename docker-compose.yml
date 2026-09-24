@@ -1,0 +1,36 @@
+# Local development database. `docker compose up -d postgres` is all plan 01 needs; the `api`,
+# `web` and `agent-runner` services join this file with the deployment plan, behind the VPS
+# TLS proxy like MAGGuarantee and MAGSpace — nothing here ever listens publicly.
+
+# Fixed project name so a run from a pipeline checkout and a run from the server directory are
+# the same compose project (the MAGSpace lesson).
+name: bugbot
+
+# Docker keeps container logs forever by default; this caps them at 5 × 10 MB per service.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '5'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bugbot-postgres
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER required in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB required in .env}
+    ports:
+      # Localhost only — the DB must never be reachable from the internet. The host-side port is
+      # a variable because the same machine may already run another project's Postgres on 5432.
+      - '127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432'
+    volumes:
+      - ${POSTGRES_DATA:?POSTGRES_DATA required in .env}:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 5
